@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Smash Bros Monopoly</title>
+
+        <script src="./assets/js/jquery.min.js"></script>
+        <script src="./assets/js/bootstrap.min.js"></script>
+        <script src="./assets/js/bootstrap-select.min.js"></script>
+        <link href="./assets/css/bootstrap-theme.min.css" rel="stylesheet" />
+        <link href="./assets/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="./assets/css/bootstrap-select.min.css" rel="stylesheet" />
+        <link href="./assets/font/stylesheet.css" rel="stylesheet" />
+        <link href="./assets/css/monopoly.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="content">
+            <div id="resume_div" class="hidden">
+                <img src="./assets/img/top_image.png" height="200px" />
+                <br />
+                Welcome to Smash Monopoly!
+                <br /><br />
+                A saved game is detected! Would you like to continue or start a new game?
+                <br /><br />
+                <button id="continue-game-button" class="button-1" type="button">Continue</button>
+                <br />
+                <button id="new-game-button" class="button-1" type="button">New Game</button>
+            </div>
+            <div id="setup_div" class="hidden">
+                <!--<img src="img/top_image.png" height="200px" />
+            <br />
+            Welcome to Smash Monopoly!
+            <br /><br />
+            <div id="game_type">
+                <button id="host_button" onclick="hostMultiplayer()" class="button-1" type="button">Host Multiplayer</button>
+                <br />
+                <button id="join_button" onclick="enterRoomCode()" class="button-1" type="button">Join Multiplayer</button>
+                <br />
+                <button id="local_button" onclick="playLocally()" class="button-1" type="button">Play Locally</button>
+                <br />
+            </div>
+
+            <div class="hidden" id="join_section">
+                <input id="room_code" type="text" placeholder="Room code" />
+                <br />
+                <button id="join_now" onclick="joinMultiplayer()" class="button-1" type="button">Join</button>
+            </div>
+
+            <div class="hidden" id="multiplayer_section">
+                <input style="width:430px;" id="multiplayer_url" type="text" readonly value="https://smashmonopoly.com?room=" />
+                <br />
+                <span id="multiplayer_code">Share the link above or this room code: </span>
+            </div>
+            <br />-->
+                <div id="player_names" style="width: 500px; text-align: left; margin: 0 auto">
+                    Please enter player names:
+                    <br /><br />
+                    Player 1
+                    <br />
+                    <input
+                        class="player_name_input"
+                        style="width: 70%"
+                        type="text"
+                        id="player_0"
+                        placeholder="Little Z"
+                    /><select
+                        data-size="12"
+                        class="player_token_select"
+                        data-width="100px"
+                        style="width: 25%"
+                        id="player_0_icon"
+                    ></select>
+                    <br /><br />
+                    Player 2
+                    <br />
+                    <input
+                        class="player_name_input"
+                        style="width: 70%"
+                        type="text"
+                        id="player_1"
+                        placeholder="El Xando"
+                    /><select
+                        data-size="12"
+                        class="player_token_select"
+                        data-width="100px"
+                        style="width: 25%"
+                        id="player_1_icon"
+                    ></select>
+                    <br /><br />
+                    Player 3
+                    <br />
+                    <input
+                        class="player_name_input"
+                        style="width: 70%"
+                        type="text"
+                        id="player_2"
+                        placeholder="Optional"
+                    /><select
+                        data-size="12"
+                        class="player_token_select"
+                        data-width="100px"
+                        style="width: 25%"
+                        id="player_2_icon"
+                    ></select>
+                    <br /><br />
+                    Player 4
+                    <br />
+                    <input
+                        class="player_name_input"
+                        style="width: 70%"
+                        type="text"
+                        id="player_3"
+                        placeholder="Optional"
+                    /><select
+                        data-size="12"
+                        class="player_token_select"
+                        data-width="100px"
+                        style="width: 25%"
+                        id="player_3_icon"
+                    ></select>
+                    <br /><br />
+                    <button id="startButton" disabled="disabled" class="button-1" type="button">Start</button>
+                </div>
+            </div>
+            <div id="game_div" class="hidden">
+                <div style="width: 100%; display: flex; justify-content: stretch">
+                    <div id="characters_left">
+                        <div style="font-size: 25px; background-color: #cde6d0" class="player" data-number="0">
+                            <div class="owned_characters"></div>
+                        </div>
+                        <div style="font-size: 25px; background-color: #cde6d0" class="player hidden" data-number="2">
+                            <div class="owned_characters"></div>
+                        </div>
+                    </div>
+
+                    <div style="position: relative">
+                        <div id="top_board">
+                            <button style="margin-top: 20px" type="button" id="randomize-button" class="button-1">
+                                Randomise!
+                            </button>
+                            <button id="toggleDLC" style="margin-top: 10px" type="button" class="button-1">
+                                Turn DLC Off
+                            </button>
+                        </div>
+                        <div id="left_board">
+                            <div style="height: 50%; width: 100%" id="p0name">
+                                <div class="settings_div" id="p0settings"></div>
+                            </div>
+                            <div style="height: 50%; width: 100%" id="p2name">
+                                <div class="settings_div" id="p2settings"></div>
+                            </div>
+                        </div>
+                        <div id="match_settings">
+                            <div class="text"></div>
+                        </div>
+                        <canvas id="game"></canvas>
+                        <div id="right_board">
+                            <div style="height: 50%; width: 100%" id="p1name">
+                                <div class="settings_div" id="p1settings"></div>
+                            </div>
+                            <div style="height: 50%; width: 100%" id="p3name">
+                                <div class="settings_div" id="p3settings"></div>
+                            </div>
+                        </div>
+                        <div id="bottom_board">
+                            <div class="roll">
+                                <div style="height: 50px">
+                                    <button type="button" id="roll_dice" class="roll button-1">Roll Dice</button>
+                                    <button type="button" id="continue_game" class="button-1 hidden">Continue</button>
+                                </div>
+                                <div style="display: flex">
+                                    <div class="die_face" id="die_1">
+                                        <span class="pip"></span>
+                                    </div>
+
+                                    <div style="margin-left: 10px" class="die_face" id="die_2">
+                                        <span class="pip"></span>
+                                        <span class="pip"></span>
+                                        <span class="pip"></span>
+                                        <span class="pip"></span>
+                                        <span class="pip"></span>
+                                        <span class="pip"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="win hidden">
+                                <span style="font-size: 20px">FIGHT!</span><br />
+                                Who won?<br />
+                                <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                                    <button style="display: inline-block" class="button-1" id="p0button"></button>
+                                    <button style="display: inline-block" class="button-1" id="p1button"></button>
+                                    <button
+                                        style="display: inline-block"
+                                        class="button-1 hidden"
+                                        id="p2button"
+                                    ></button>
+                                    <button
+                                        style="display: inline-block"
+                                        class="button-1 hidden"
+                                        id="p3button"
+                                    ></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="characters_right">
+                        <div style="font-size: 25px; background-color: #cde6d0" class="player" data-number="1">
+                            <div class="owned_characters"></div>
+                        </div>
+                        <div style="font-size: 25px; background-color: #cde6d0" class="player hidden" data-number="3">
+                            <div class="owned_characters"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <input class="hidden" id="override" type="text" />
+            </div>
+        </div>
+    </body>
+    <script type="module" src="./src/main.ts"></script>
+</html>

@@ -1,0 +1,25 @@
+{
+    "name": "smashmonopoly.com",
+    "version": "1.0.0",
+    "description": "",
+    "main": "utils/extract.js",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "preview": "vite preview"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/bootstrap-select": "^1.13.4",
+        "@types/jquery": "^3.5.16",
+        "prettier": "^2.8.8",
+        "typescript": "^5.0.4",
+        "vite": "^4.3.5"
+    },
+    "dependencies": {
+        "bootstrap-select": "1.13.4",
+        "jquery": "3.6.1"
+    }
+}

@@ -1,0 +1,1 @@
+-   Remove all event fn on index.html

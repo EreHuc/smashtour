@@ -1,0 +1,143 @@
+https://smashmonopoly.com/chest/inkling.png
+https://smashmonopoly.com/chest/joker.png
+https://smashmonopoly.com/chest/snake.png
+https://smashmonopoly.com/chest/wiifit.png
+https://smashmonopoly.com/chest/bayonetta.png
+https://smashmonopoly.com/chest/sora.png
+https://smashmonopoly.com/chance/gandw.png
+https://smashmonopoly.com/chance/hero.png
+https://smashmonopoly.com/chance/pacman.png
+https://smashmonopoly.com/chance/duckhunt.png
+https://smashmonopoly.com/chance/wario.png
+https://smashmonopoly.com/chance/rosalina.png
+https://smashmonopoly.com/visiting/steve.jpg
+https://smashmonopoly.com/visiting/kazuya.jpg
+https://smashmonopoly.com/visiting/rob.jpg
+https://smashmonopoly.com/slots/littlemac.webp
+https://smashmonopoly.com/slots/drmario.webp
+https://smashmonopoly.com/slots/iceclimbers.webp
+https://smashmonopoly.com/slots/banjo.webp
+https://smashmonopoly.com/slots/megaman.webp
+https://smashmonopoly.com/slots/olimar.webp
+https://smashmonopoly.com/slots/sonic.webp
+https://smashmonopoly.com/slots/minmin.webp
+https://smashmonopoly.com/slots/bowser.webp
+https://smashmonopoly.com/slots/bowserjr.webp
+https://smashmonopoly.com/slots/simon.webp
+https://smashmonopoly.com/slots/richter.webp
+https://smashmonopoly.com/station/byleth.png
+https://smashmonopoly.com/station/chrom.png
+https://smashmonopoly.com/station/corrin.png
+https://smashmonopoly.com/station/ike.png
+https://smashmonopoly.com/station/lucina.png
+https://smashmonopoly.com/station/marth.png
+https://smashmonopoly.com/station/robin.png
+https://smashmonopoly.com/station/roy.png
+https://smashmonopoly.com/slots/villager.webp
+https://smashmonopoly.com/slots/isabelle.webp
+https://smashmonopoly.com/slots/ken.webp
+https://smashmonopoly.com/slots/ryu.webp
+https://smashmonopoly.com/slots/fox.webp
+https://smashmonopoly.com/slots/falco.webp
+https://smashmonopoly.com/slots/wolf.webp
+https://smashmonopoly.com/slots/pit.webp
+https://smashmonopoly.com/slots/darkpit.webp
+https://smashmonopoly.com/slots/palutena.webp
+https://smashmonopoly.com/slots/kirby.webp
+https://smashmonopoly.com/slots/kingdedede.webp
+https://smashmonopoly.com/slots/metaknight.webp
+https://smashmonopoly.com/slots/shulk.webp
+https://smashmonopoly.com/slots/mythra.webp
+https://smashmonopoly.com/slots/pyra.webp
+https://smashmonopoly.com/slots/samus.webp
+https://smashmonopoly.com/slots/zss.webp
+https://smashmonopoly.com/slots/ridley.webp
+https://smashmonopoly.com/slots/darksamus.webp
+https://smashmonopoly.com/slots/donkeykong.webp
+https://smashmonopoly.com/slots/diddykong.webp
+https://smashmonopoly.com/slots/krool.webp
+https://smashmonopoly.com/slots/mario.webp
+https://smashmonopoly.com/slots/peach.webp
+https://smashmonopoly.com/slots/plant.webp
+https://smashmonopoly.com/slots/daisy.webp
+https://smashmonopoly.com/slots/yoshi.webp
+https://smashmonopoly.com/slots/luigi.webp
+https://smashmonopoly.com/slots/pichu.webp
+https://smashmonopoly.com/slots/pikachu.webp
+https://smashmonopoly.com/slots/jigglypuff.webp
+https://smashmonopoly.com/slots/charizard.webp
+https://smashmonopoly.com/slots/ivysaur.webp
+https://smashmonopoly.com/slots/squirtle.webp
+https://smashmonopoly.com/slots/mewtwo.webp
+https://smashmonopoly.com/slots/incineroar.webp
+https://smashmonopoly.com/slots/greninja.webp
+https://smashmonopoly.com/slots/lucario.webp
+https://smashmonopoly.com/slots/ganondorf.webp
+https://smashmonopoly.com/slots/link.webp
+https://smashmonopoly.com/slots/toonlink.webp
+https://smashmonopoly.com/slots/younglink.webp
+https://smashmonopoly.com/slots/zelda.webp
+https://smashmonopoly.com/slots/sheik.webp
+https://smashmonopoly.com/slots/cloud.webp
+https://smashmonopoly.com/slots/sephiroth.webp
+https://smashmonopoly.com/slots/ness.webp
+https://smashmonopoly.com/slots/lucas.webp
+https://smashmonopoly.com/img/series/animalcrossing.png
+https://smashmonopoly.com/img/series/donkeykong.png
+https://smashmonopoly.com/img/series/finalfantasy.png
+https://smashmonopoly.com/img/series/kirby.png
+https://smashmonopoly.com/img/series/mario.png
+https://smashmonopoly.com/img/series/metroid.png
+https://smashmonopoly.com/img/series/mother.png
+https://smashmonopoly.com/img/series/palutena.png
+https://smashmonopoly.com/img/series/pokemon.png
+https://smashmonopoly.com/img/series/starfox.png
+https://smashmonopoly.com/img/series/streetfighter.png
+https://smashmonopoly.com/img/series/xenoblade.png
+https://smashmonopoly.com/img/series/zelda.png
+https://smashmonopoly.com/cards/chest/CC 1.jpg
+https://smashmonopoly.com/cards/chest/CC 2.jpg
+https://smashmonopoly.com/cards/chest/CC 3.jpg
+https://smashmonopoly.com/cards/chest/CC 4.jpg
+https://smashmonopoly.com/cards/chest/CC 5.jpg
+https://smashmonopoly.com/cards/chest/CC 6.jpg
+https://smashmonopoly.com/cards/chest/CC 7.jpg
+https://smashmonopoly.com/cards/chest/CC 8.jpg
+https://smashmonopoly.com/cards/chest/CC 9.jpg
+https://smashmonopoly.com/cards/chest/CC 10.jpg
+https://smashmonopoly.com/cards/chest/CC 11.jpg
+https://smashmonopoly.com/cards/chest/CC 12.jpg
+https://smashmonopoly.com/cards/chest/CC 13.jpg
+https://smashmonopoly.com/cards/chest/CC 14.jpg
+https://smashmonopoly.com/cards/chest/CC 15.jpg
+https://smashmonopoly.com/cards/chance/CHANCE 1.jpg
+https://smashmonopoly.com/cards/chance/CHANCE 2.jpg
+https://smashmonopoly.com/cards/chance/CHANCE 3.jpg
+https://smashmonopoly.com/cards/chance/CHANCE 4.jpg
+https://smashmonopoly.com/cards/chance/CHANCE 5.jpg
+https://smashmonopoly.com/cards/chance/CHANCE 6.jpg
+https://smashmonopoly.com/cards/chance/CHANCE 7.jpg
+https://smashmonopoly.com/cards/chance/CHANCE 8.jpg
+https://smashmonopoly.com/cards/chance/CHANCE 9.jpg
+https://smashmonopoly.com/cards/chance/CHANCE 10.jpg
+https://smashmonopoly.com/cards/chance/CHANCE 11.jpg
+https://smashmonopoly.com/cards/chance/CHANCE 12.jpg
+https://smashmonopoly.com/cards/chance/CHANCE 13.jpg
+https://smashmonopoly.com/cards/chance/CHANCE 14.jpg
+https://smashmonopoly.com/cards/chance/CHANCE 15.jpg
+https://smashmonopoly.com/tokens/parking_token.png
+https://smashmonopoly.com/tokens/assisttrophey.png
+https://smashmonopoly.com/tokens/bobomb.png
+https://smashmonopoly.com/tokens/crate.png
+https://smashmonopoly.com/tokens/football.png
+https://smashmonopoly.com/tokens/freezie.png
+https://smashmonopoly.com/tokens/hammer.png
+https://smashmonopoly.com/tokens/homerunbat.png
+https://smashmonopoly.com/tokens/launchstar.png
+https://smashmonopoly.com/tokens/maximtomato.png
+https://smashmonopoly.com/tokens/mushroom.png
+https://smashmonopoly.com/tokens/pokeball.png
+https://smashmonopoly.com/tokens/sandbag.png
+https://smashmonopoly.com/tokens/smartbomb.png
+https://smashmonopoly.com/tokens/smashball.png
+https://smashmonopoly.com/tokens/spiny.png

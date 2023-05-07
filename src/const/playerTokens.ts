@@ -1,0 +1,18 @@
+export const playerTokens = [
+    'parking_token',
+    'assisttrophey',
+    'bobomb',
+    'crate',
+    'football',
+    'freezie',
+    'hammer',
+    'homerunbat',
+    'launchstar',
+    'maximtomato',
+    'mushroom',
+    'pokeball',
+    'sandbag',
+    'smartbomb',
+    'smashball',
+    'spiny',
+]
