@@ -1,4 +1,4 @@
-import { Token } from '../object'
+import { Player } from '../object'
 import {
     chances,
     communityChests,
@@ -12,9 +12,11 @@ import {
     seriesNames,
     SlotType,
     slotTypes,
-    toptiers,
+    topTiers,
     handicapBands,
 } from '../const'
+import { Chance, ChanceCard, Chest, ChestCard, Series, Sprite, Static, Stock, Tokens, Visiting } from './Sprite'
+import { Station } from './Sprite/Station.ts'
 
 let defaultGameSettings = {
     winCondition: 3,
@@ -40,7 +42,7 @@ let defaultGameSettings = {
     playerTokens,
     seriesNames,
     slotTypes,
-    toptiers,
+    toptiers: topTiers,
     parkingCoords,
     playerColours,
     handicapBands,
@@ -52,7 +54,7 @@ interface GameSettingsProps {
     over: boolean
     losingCharacterIndex?: number
     upgradeCharacterIndex?: number
-    recentWinner?: Token
+    recentWinner?: Player
     chestCounter: number
     chanceCounter: number
     shuffleCards: boolean
@@ -70,7 +72,7 @@ interface GameSettingsProps {
     slotTypes: typeof slotTypes
     friendlyNames: typeof friendlyNames
     heavies: typeof heavies
-    toptiers: typeof toptiers
+    toptiers: typeof topTiers
     parkingCoords: typeof parkingCoords
     playerColours: typeof playerColours
     handicapBands: typeof handicapBands
@@ -82,7 +84,7 @@ export class GameSettings {
     over: boolean
     losingCharacterIndex?: number
     upgradeCharacterIndex?: number
-    recentWinner?: Token
+    recentWinner?: Player
     chestCounter: number
     chanceCounter: number
     shuffleCards: boolean
@@ -100,7 +102,7 @@ export class GameSettings {
     slotTypes: SlotType[]
     friendlyNames: typeof friendlyNames
     heavies: typeof heavies
-    toptiers: typeof toptiers
+    toptiers: typeof topTiers
     parkingCoords: typeof parkingCoords
     playerColours: typeof playerColours
     handicapBands: typeof handicapBands
@@ -246,38 +248,40 @@ export class GameSettings {
             playerDropdowns.selectpicker('refresh')
         })
 
-        this.images.house = new Image()
-        this.images.house.src = './assets/img/house.png'
-        this.images.hotel = new Image()
-        this.images.hotel.src = './assets/img/hotel.png'
-        this.images.boardMiddle = new Image()
-        this.images.boardMiddle.src = './assets/img/top_image.png'
-        this.images.parking = new Image()
-        this.images.parking.src = './assets/img/parking.png'
+        this.images.house = new Static('house')
+        this.images.hotel = new Static('hotel')
+        this.images.boardMiddle = new Static('top_image')
+        this.images.parking = new Static('parking')
 
         this.slotTypes.forEach((slotType) => {
             if (slotType.pool) {
-                const folder = ['station', 'chest', 'chance', 'visiting'].includes(slotType.type)
-                    ? slotType.type
-                    : 'slots'
-                const extension = ['chest', 'chance', 'station'].includes(slotType.type)
-                    ? 'png'
-                    : folder === 'slots'
-                    ? 'webp'
-                    : 'jpg'
-
+                let type: (name: string) => Sprite
+                switch (slotType.type) {
+                    case 'station':
+                        type = (name: string) => new Station(name)
+                        break
+                    case 'chest':
+                        type = (name: string) => new Chest(name)
+                        break
+                    case 'chance':
+                        type = (name: string) => new Chance(name)
+                        break
+                    case 'visiting':
+                        type = (name: string) => new Visiting(name)
+                        break
+                    default:
+                        type = (name: string) => new Stock(name)
+                }
                 slotType.pool.forEach((poolItem) => {
                     if (Array.isArray(poolItem)) {
                         poolItem.forEach((innerPool) => {
                             if (!images[innerPool]) {
-                                images[innerPool] = new Image()
-                                images[innerPool].src = `./assets/img/${folder}/${innerPool}.${extension}`
+                                images[innerPool] = type(innerPool)
                             }
                         })
                     } else {
                         if (!images[poolItem]) {
-                            images[poolItem] = new Image()
-                            images[poolItem].src = `./assets/img/${folder}/${poolItem}.${extension}`
+                            images[poolItem] = type(poolItem)
                         }
                     }
                 })
@@ -285,23 +289,19 @@ export class GameSettings {
         })
 
         this.communityChests.forEach((chest) => {
-            this.images['chest' + chest.fileIndex] = new Image()
-            this.images['chest' + chest.fileIndex].src = `./assets/img/cards/chest/CC ${chest.fileIndex}.jpg`
+            this.images['chest' + chest.fileIndex] = new ChestCard(chest.fileIndex.toString())
         })
 
         this.chances.forEach((chance) => {
-            this.images['chance' + chance.fileIndex] = new Image()
-            this.images['chance' + chance.fileIndex].src = `./assets/img/cards/chance/CHANCE ${chance.fileIndex}.jpg`
+            this.images['chance' + chance.fileIndex] = new ChanceCard(chance.fileIndex.toString())
         })
 
         this.playerTokens.forEach((token) => {
-            this.images[token] = new Image()
-            this.images[token].src = `./assets/img/tokens/${token}.png`
+            this.images[token] = new Tokens(token)
         })
 
         this.seriesNames.forEach((series) => {
-            this.images.series[series.name] = new Image()
-            this.images.series[series.name].src = `./assets/img/series/${series.name}.png`
+            this.images[series.name] = new Series(series.name)
         })
     }
 }

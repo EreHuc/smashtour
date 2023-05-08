@@ -1,12 +1,15 @@
 import { CustomError } from '../utils'
-import { Chance, CommunityChest, Corner, SlotType } from '../const'
+import { Chance, CommunityChest, Corner, Name, SlotType } from '../const'
 import { GameSettings } from './GameSettings.ts'
-import { Token } from './Token.ts'
+import { Player } from './Player.ts'
 import { Direction } from '../type'
 import { Canvas } from './Canvas.ts'
 import { RollingPlayer } from '../type/RollingPlayer.ts'
+import { Character } from '../const/type/Character.enum.ts'
 
-export type Slot = Corner & {
+export type Slot = Omit<Corner, 'name' | 'type'> & {
+    name: Name
+    type: Name
     owner?: number | string
     locked?: boolean
     house?: boolean
@@ -25,7 +28,6 @@ export type Slot = Corner & {
     property?: boolean
     heavy?: boolean
     toptier?: boolean
-    type?: string
     drawSlot?: boolean
     opacity?: number
 }
@@ -34,7 +36,7 @@ export class Game extends Canvas {
     rounds: number
     started: boolean
     slots: Slot[]
-    players: Token[]
+    players: Player[]
     processingRoll = false
     finishedAnimatingAction?: string
     rollingPlayer?: RollingPlayer
@@ -83,7 +85,7 @@ export class Game extends Canvas {
         requestAnimationFrame(() => this.updateGameArea())
     }
 
-    public configureGame(players: Token[]) {
+    public configureGame(players: Player[]) {
         this.players = players
         this.players.forEach((player) => this.configurePlayer(player))
 
@@ -341,7 +343,7 @@ export class Game extends Canvas {
         }
     }
 
-    private allocateOwner(slotIndex: number, newOwner: Token | RollingPlayer) {
+    private allocateOwner(slotIndex: number, newOwner: Player | RollingPlayer) {
         // Set new owner, remove house or hotel if it had them
         newOwner.charactersWon++
         this.slots[slotIndex].owner = newOwner.playerIndex
@@ -361,7 +363,7 @@ export class Game extends Canvas {
         }
     }
 
-    private gameOver(winner: Token) {
+    private gameOver(winner: Player) {
         const matchSettings$ = $('#match_settings .text')
         matchSettings$.html(
             `<div style='display: flex; flex-direction: column; align-items: center'><span>${winner.name} has won by holding ${winner.setCount} sets!</span><button type='button' class='button-1' onclick='location.reload()'>Restart</button></div>`
@@ -532,7 +534,7 @@ export class Game extends Canvas {
         this.newMessage(undoButton, false)
     }
 
-    private claimRandomCharacter(claimer: Token, type?: string) {
+    private claimRandomCharacter(claimer: Player, type?: string) {
         let charactersToClaim = this.slots.filter(
             (character) => character.property && typeof character.owner == 'undefined'
         )
@@ -603,13 +605,13 @@ export class Game extends Canvas {
         this.slots = this._populateSlots()
 
         if (!this.slots.find((slot) => slot.heavy)) {
-            const ridley = this.slots.find((slot) => slot.name === 'ridley')
+            const ridley = this.slots.find((slot) => slot.name === Character.ridley)
             if (ridley) {
                 ridley.heavy = true
                 console.log('ridley is now a heavy')
             } else {
                 this.slots
-                    .filter((slot) => slot.name === 'samus' || slot.name === 'darksamus')
+                    .filter((slot) => slot.name === Character.samus || slot.name === Character.dark_samus)
                     .forEach((slot) => (slot.heavy = true))
                 console.log('samuses now heavies')
             }
@@ -693,14 +695,14 @@ export class Game extends Canvas {
         return slot ? slot[property] : undefined
     }
 
-    private addHandicap(player: Token, handicap: number) {
+    private addHandicap(player: Player, handicap: number) {
         player.handicap += handicap
         if (!this.handicapBands.includes(player.handicap)) {
             player.handicap = this.handicapBands.find((band) => band < player.handicap) ?? 0
         }
     }
 
-    private addPlayerText(player: Token) {
+    private addPlayerText(player: Player) {
         const $playerSettings = $('#p' + player.playerIndex + 'settings')
         if (player.character) {
             $playerSettings.html(
@@ -773,7 +775,7 @@ export class Game extends Canvas {
         requestAnimationFrame(() => this.updateGameArea())
     }
 
-    private configurePlayer(player: Token) {
+    private configurePlayer(player: Player) {
         let num = player.playerIndex
         // Add player name and colour to section
         $(`.player[data-number="${num}"], #p${num}name`)

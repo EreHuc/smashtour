@@ -2,8 +2,11 @@ import { CustomError } from '../utils'
 import { Direction } from '../type'
 import { GameSettings } from './GameSettings.ts'
 import { Slot } from './Game.ts'
-import { Token } from './Token.ts'
+import { Player } from './Player.ts'
 import { RollingPlayer } from '../type/RollingPlayer.ts'
+import { Character } from '../const/type/Character.enum.ts'
+import { SlotTypeName } from '../const/type/SlotTypeName.enum.ts'
+import { Name } from '../const'
 
 export class Canvas extends GameSettings {
     canvas: HTMLCanvasElement
@@ -50,9 +53,10 @@ export class Canvas extends GameSettings {
     public _populateSlots(): Slot[] {
         const slots: Slot[] = []
         this.corners.forEach((corner) => {
+            let tmpCorner: Slot = { ...corner }
             // First draw that corner
-            let height = corner.bottom - corner.top,
-                width = corner.right - corner.left
+            let height = corner.bottom - corner.top
+            let width = corner.right - corner.left
             this.strokeRectangle(width, height, corner.left, corner.top, 'red')
             // Now populate slots between with next
             let direction: Direction
@@ -69,7 +73,7 @@ export class Canvas extends GameSettings {
                     startX = corner.left
                     startY = corner.top
                     break
-                case 'free':
+                case 'freecharacter':
                     direction = Direction.left_right
                     startX = corner.right - this.standardWidth
                     startY = corner.top
@@ -81,23 +85,28 @@ export class Canvas extends GameSettings {
                     break
             }
 
-            if (corner.type === 'visiting') {
-                // @ts-expect-error item.pool is defined on corner type «visiting»
-                corner.name = corner.pool[Math.floor(Math.random() * 3)]
-                corner.friendlyName =
-                    corner.name in this.friendlyNames
-                        ? // @ts-expect-error corner.name is keyof friendlyNames
-                          this.friendlyNames[corner.name]
-                        : corner.name.charAt(0).toUpperCase() + corner.name.slice(1)
-            } else if (corner.type === 'banned') {
-                corner.name = slots[10].name
-                corner.friendlyName = slots[10].friendlyName
+            if (tmpCorner.type === 'visiting') {
+                if (tmpCorner.pool?.length) {
+                    tmpCorner.name = tmpCorner.pool[Math.floor(Math.random() * tmpCorner.pool.length)] as Character
+                    const friendlyNames = this.friendlyNames[corner.name]
+                    if (friendlyNames !== undefined) {
+                        tmpCorner.friendlyName = friendlyNames
+                    } else {
+                        tmpCorner.friendlyName = corner.name.charAt(0).toUpperCase() + corner.name.slice(1)
+                    }
+                }
+            } else if (tmpCorner.type === 'banned') {
+                const visitingSlot = slots.find((slot) => slot.type === SlotTypeName.visiting)
+                if (visitingSlot) {
+                    tmpCorner.name = visitingSlot.name
+                    tmpCorner.friendlyName = visitingSlot.friendlyName
+                }
             }
 
-            slots.push(corner)
+            slots.push(tmpCorner)
 
             corner.next?.forEach((nextType, index) => {
-                let character: string
+                let character: Name
                 let slotType = this.slotTypes.find((type) => type.type === nextType)
                 if (!slotType) {
                     throw new Error(
@@ -169,16 +178,16 @@ export class Canvas extends GameSettings {
                         break
                 }
                 let isProperty = !['chest', 'chance', 'banned', 'free', 'lowtiertax', 'lametax'].includes(nextType)
-                let isHeavy = this.heavies.includes(character)
-                let isTopTier = this.toptiers.includes(character)
+                let isHeavy = this.heavies.includes(character as Character)
+                let isTopTier = this.toptiers.includes(character as Character)
+                let friendlyName = this.friendlyNames[character]
+                if (friendlyName === undefined) {
+                    friendlyName = character.charAt(0).toUpperCase() + character.slice(1)
+                }
 
                 let characterObj = {
                     name: character,
-                    friendlyName:
-                        character in this.friendlyNames
-                            ? // @ts-expect-error character is keyof friendlyNames
-                              this.friendlyNames[character]
-                            : character.charAt(0).toUpperCase() + character.slice(1),
+                    friendlyName,
                     left: startX,
                     right: startX + width,
                     top: startY,
@@ -206,7 +215,7 @@ export class Canvas extends GameSettings {
         return slots
     }
 
-    public _updateGameArea(slots: Slot[], players: Token[], playerColours: string[], showSeries: boolean) {
+    public _updateGameArea(slots: Slot[], players: Player[], playerColours: string[], showSeries: boolean) {
         this.clear()
         this.drawSlots(slots, players, showSeries)
         slots.forEach((slot) => {
@@ -243,67 +252,67 @@ export class Canvas extends GameSettings {
         }
     }
 
-    private drawSlots(slots: Slot[], players: Token[], showSeries: boolean) {
+    private drawSlots(slots: Slot[], players: Player[], showSeries: boolean) {
         this.context.drawImage(this.images.parking, 0, 0, this.standardHeight, this.standardHeight)
         this.addBoardLogo()
         let seriesSeen: string[] = []
         let parkingCount = 0
-        slots.forEach((item) => {
+        slots.forEach((slot) => {
             let rotateBy
             let offsetX = 0
             let offsetY = 0
-            switch (item.direction) {
+            switch (slot.direction) {
                 case 'right_left':
                     rotateBy = 0
                     this.context.textAlign = 'left'
                     this.context.textBaseline = 'top'
-                    offsetX += item.hotel ? 50 : 60
-                    offsetY += item.hotel ? 0 : 5
+                    offsetX += slot.hotel ? 50 : 60
+                    offsetY += slot.hotel ? 0 : 5
                     break
                 case 'bottom_top':
                     rotateBy = Math.PI / 2
                     this.context.textAlign = 'left'
                     this.context.textBaseline = 'bottom'
-                    offsetY += item.hotel ? 0 : 5
-                    offsetX += item.hotel ? 50 : 60
+                    offsetY += slot.hotel ? 0 : 5
+                    offsetX += slot.hotel ? 50 : 60
                     break
                 case 'left_right':
                     rotateBy = Math.PI
                     this.context.textAlign = 'right'
                     this.context.textBaseline = 'bottom'
-                    offsetX += item.hotel ? 50 : 60
-                    offsetY += item.hotel ? 0 : 5
+                    offsetX += slot.hotel ? 50 : 60
+                    offsetY += slot.hotel ? 0 : 5
                     break
                 case 'top_bottom':
                     rotateBy = -Math.PI / 2
                     this.context.textAlign = 'right'
                     this.context.textBaseline = 'top'
-                    offsetY += item.hotel ? 0 : 5
-                    offsetX += item.hotel ? 50 : 60
+                    offsetY += slot.hotel ? 0 : 5
+                    offsetX += slot.hotel ? 50 : 60
                     break
             }
             // Add icon & text
-            if (item.drawSlot) {
+            if (slot.drawSlot) {
                 this.context.save()
                 let x
                 let y
                 let w
                 let h
                 let addText = false
-                if (['chest', 'chance', 'station'].includes(item.type)) {
-                    x = item.ownLeft
-                    y = item.ownTop
+                if (['chest', 'chance', 'station'].includes(slot.type)) {
+                    x = slot.ownLeft
+                    y = slot.ownTop
                     w = this.standardWidth
                     h = this.standardHeight
                     addText = true
-                } else if (['go', 'visiting', 'freecharacter', 'tobanned'].includes(item.type)) {
-                    x = item.left
-                    y = item.top
+                } else if (['go', 'visiting', 'freecharacter', 'tobanned'].includes(slot.type)) {
+                    x = slot.left
+                    y = slot.top
                     w = this.standardHeight
                     h = this.standardHeight
                 } else {
-                    x = item.iconX
-                    y = item.iconY
+                    x = slot.iconX
+                    y = slot.iconY
                     w = 70
                     h = 70
                     addText = true
@@ -313,27 +322,26 @@ export class Canvas extends GameSettings {
                 // @ts-expect-error rotateBy defined is by the if-elseif-else condition above TODO: fix that with is operator
                 this.context.rotate(rotateBy)
                 if (addText) {
-                    if (['chest', 'chance', 'station'].includes(item.type)) {
-                        this.context.drawImage(this.images[item.name], 0, 0, w, h)
+                    if (['chest', 'chance', 'station'].includes(slot.type)) {
+                        this.context.drawImage(this.images[slot.name], 0, 0, w, h)
                         this.context.restore()
                         this.context.save()
                         // @ts-expect-error item.iconX and item.iconY are defined by the if-elseif-else condition above TODO: fix that with is operator
-                        this.context.translate(item.iconX, item.iconY)
+                        this.context.translate(slot.iconX, slot.iconY)
                         // @ts-expect-error rotateBy defined is by the if-elseif-else condition above TODO: fix that with is operator
                         this.context.rotate(rotateBy)
                     } else {
-                        if (['lowtiertax', 'lametax', 'utility'].includes(item.type)) {
-                            this.context.drawImage(this.images[item.name], -40, -45, 80, 80)
+                        if (['lowtiertax', 'lametax', 'utility'].includes(slot.type)) {
+                            this.context.drawImage(this.images[slot.name], -40, -45, 80, 80)
                         } else {
                             // Normal slot
-                            this.context.drawImage(this.images[item.name], -35, -35, w, h)
+                            this.context.drawImage(this.images[slot.name], -35, -35, w, h)
                             if (showSeries) {
-                                let series = this.seriesNames.find(function (series) {
-                                    return series.characters.includes(item.name)
-                                })
-                                if (series && this.images.series[series.name] && !seriesSeen.includes(series.name)) {
+                                // @ts-expect-error slot.name isn't a Character but includes doesn't care about that
+                                let series = this.seriesNames.find((series) => series.characters.includes(slot.name))
+                                if (series && this.images[series.name] && !seriesSeen.includes(series.name)) {
                                     seriesSeen.push(series.name)
-                                    this.context.drawImage(this.images.series[series.name], -160, -180, 206, 110)
+                                    this.context.drawImage(this.images[series.name], -160, -180, 206, 110)
                                 }
                             }
                         }
@@ -343,14 +351,14 @@ export class Canvas extends GameSettings {
                     this.context.textBaseline = 'middle'
                     this.context.fillStyle = 'black'
                     this.context.font = '13px "Futura PT Medium"'
-                    switch (item.type) {
+                    switch (slot.type) {
                         case 'utility':
-                            this.context.fillText(item.friendlyName.toUpperCase(), 0, -75)
+                            this.context.fillText(slot.friendlyName.toUpperCase(), 0, -75)
                             break
                         case 'lowtiertax':
                         case 'lametax':
                             this.context.font = '18px "Futura PT Medium"'
-                            this.context.fillText(item.type === 'lowtiertax' ? 'LOW TIER' : 'LAME', 0, -75)
+                            this.context.fillText(slot.type === 'lowtiertax' ? 'LOW TIER' : 'LAME', 0, -75)
                             this.context.fillText('TAX', 0, -55)
                             break
                         case 'chest':
@@ -361,11 +369,11 @@ export class Canvas extends GameSettings {
                             this.context.fillText('CHANCE', 0, -70)
                             break
                         case 'station':
-                            this.context.fillText(item.name.toUpperCase(), 0, -75)
+                            this.context.fillText(slot.name.split('_')[0].toUpperCase(), 0, -75)
                             this.context.fillText('STATION', 0, -60)
                             break
                         default:
-                            let characterText: string | string[] = item.friendlyName.toUpperCase()
+                            let characterText: string | string[] = slot.friendlyName.toUpperCase()
                             if (characterText.length >= 10) {
                                 characterText = characterText.split(' ')
                             } else {
@@ -395,27 +403,27 @@ export class Canvas extends GameSettings {
                     }
                 } else {
                     // Only actually the banned space
-                    this.context.drawImage(this.images[item.name], 0, 0, w, h)
+                    this.context.drawImage(this.images[slot.name], 0, 0, w, h)
                 }
 
                 this.context.restore()
             }
 
             // Place player icon
-            if (item.owner || item.owner === 0) {
-                if (item.owner === 'parking') {
+            if (slot.owner || slot.owner === 0) {
+                if (slot.owner === 'parking') {
                     this.context.fillStyle = 'rgba(0,0,0,0.2)'
-                    this.context.fillRect(item.left, item.top, item.right - item.left, item.bottom - item.top)
+                    this.context.fillRect(slot.left, slot.top, slot.right - slot.left, slot.bottom - slot.top)
                     this.context.save()
                     // @ts-expect-error item.ownLeft and item.ownTop is defined by the if-elseif-else condition above TODO: fix that with is operator
-                    this.context.translate(item.ownLeft, item.ownTop)
+                    this.context.translate(slot.ownLeft, slot.ownTop)
                     // @ts-expect-error rotateBy is defined by the if-elseif-else condition above TODO: fix that with is operator
                     this.context.rotate(rotateBy)
                     this.context.drawImage(this.images['parking_token'], this.standardWidth / 2 - 20, -5, 40, 40)
                     this.context.restore()
-                    if (item.type === 'station') {
+                    if (slot.type === 'station') {
                         this.context.drawImage(
-                            this.images[item.name],
+                            this.images[slot.name],
                             0,
                             110,
                             197,
@@ -427,7 +435,7 @@ export class Canvas extends GameSettings {
                         )
                     } else {
                         this.context.drawImage(
-                            this.images[item.name],
+                            this.images[slot.name],
                             this.parkingCoords[parkingCount][0],
                             this.parkingCoords[parkingCount][1],
                             20,
@@ -440,46 +448,46 @@ export class Canvas extends GameSettings {
                     }
                 } else {
                     // Translucent rectangle over whole spot
-                    if (item.owner === this.losingCharacterIndex && !item.locked) {
-                        if (item.opacity === undefined) {
-                            item.opacity = 0
+                    if (slot.owner === this.losingCharacterIndex && !slot.locked) {
+                        if (slot.opacity === undefined) {
+                            slot.opacity = 0
                         }
-                        this.context.fillStyle = this.playerColours[item.owner].replace(')', ',' + item.opacity + ')')
-                        item.opacity += 0.005
-                        if (item.opacity > 0.4) {
-                            item.opacity = 0
+                        this.context.fillStyle = this.playerColours[slot.owner].replace(')', ',' + slot.opacity + ')')
+                        slot.opacity += 0.005
+                        if (slot.opacity > 0.4) {
+                            slot.opacity = 0
                         }
                     } else if (
-                        item.owner === this.upgradeCharacterIndex &&
-                        !item.hotel &&
-                        !['station', 'utility'].includes(item.type)
+                        slot.owner === this.upgradeCharacterIndex &&
+                        !slot.hotel &&
+                        !['station', 'utility'].includes(slot.name)
                     ) {
-                        if (item.opacity === undefined) {
-                            item.opacity = 0
+                        if (slot.opacity === undefined) {
+                            slot.opacity = 0
                         }
-                        this.context.fillStyle = this.playerColours[item.owner].replace(')', ',' + item.opacity + ')')
-                        item.opacity += 0.005
-                        if (item.opacity > 0.4) {
-                            item.opacity = 0
+                        this.context.fillStyle = this.playerColours[slot.owner].replace(')', ',' + slot.opacity + ')')
+                        slot.opacity += 0.005
+                        if (slot.opacity > 0.4) {
+                            slot.opacity = 0
                         }
                     } else {
-                        if (typeof item.owner === 'number') {
-                            this.context.fillStyle = this.playerColours[item.owner].replace(')', ',0.2)')
+                        if (typeof slot.owner === 'number') {
+                            this.context.fillStyle = this.playerColours[slot.owner].replace(')', ',0.2)')
                         }
                     }
 
-                    this.context.fillRect(item.left, item.top, item.right - item.left, item.bottom - item.top)
+                    this.context.fillRect(slot.left, slot.top, slot.right - slot.left, slot.bottom - slot.top)
                     this.context.save()
                     // @ts-expect-error item.ownLeft and item.ownTop are defined by the if-elseif-else condition above TODO: fix that with is operator
-                    this.context.translate(item.ownLeft, item.ownTop)
+                    this.context.translate(slot.ownLeft, slot.ownTop)
                     // @ts-expect-error rotateBy is defined by the if-elseif-else condition above TODO: fix that with is operator
                     this.context.rotate(rotateBy)
-                    if (typeof item.owner === 'number') {
-                        this.context.drawImage(this.images[players[item.owner].icon], 5, 5, 20, 20)
+                    if (typeof slot.owner === 'number') {
+                        this.context.drawImage(this.images[players[slot.owner].icon], 5, 5, 20, 20)
                     }
-                    if (item.hotel) {
+                    if (slot.hotel) {
                         this.context.drawImage(this.images.hotel, offsetX, offsetY, 30, 30)
-                    } else if (item.house) {
+                    } else if (slot.house) {
                         this.context.drawImage(this.images.house, offsetX, offsetY, 20, 20)
                     }
                     this.context.restore()
@@ -487,15 +495,15 @@ export class Canvas extends GameSettings {
             }
             players.forEach(({ x = 0, y = 0, playerIndex }) => {
                 if (
-                    item.left * this.scale < x * this.scale &&
-                    item.right * this.scale > x * this.scale &&
-                    item.top * this.scale < y * this.scale &&
-                    item.bottom * this.scale > y * this.scale
+                    slot.left * this.scale < x * this.scale &&
+                    slot.right * this.scale > x * this.scale &&
+                    slot.top * this.scale < y * this.scale &&
+                    slot.bottom * this.scale > y * this.scale
                 ) {
                     this.context.save()
                     this.context.lineWidth = 5
                     this.context.strokeStyle = this.playerColours[playerIndex]
-                    this.context.strokeRect(item.left, item.top, item.right - item.left, item.bottom - item.top)
+                    this.context.strokeRect(slot.left, slot.top, slot.right - slot.left, slot.bottom - slot.top)
                     this.context.restore()
                 }
             })
@@ -511,7 +519,7 @@ export class Canvas extends GameSettings {
         this.context.restore()
     }
 
-    private updatePlayerPosition(player: Token, slots: Slot[], playerColours: string[]) {
+    private updatePlayerPosition(player: Player, slots: Slot[], playerColours: string[]) {
         if (player.index !== player.targetIndex) {
             player.progress++
             if (player.progress === 10) {

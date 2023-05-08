@@ -1,6 +1,6 @@
 import { chances, communityChests } from '../const'
 
-export class Token {
+export class Player {
     playerIndex: number
     icon: string
     name: string

@@ -1,6 +1,6 @@
-import { Token } from '../object'
+import { Player } from '../object'
 
-export type RollingPlayer = Token & {
+export type RollingPlayer = Player & {
     chest?: number
     chance?: number
 }

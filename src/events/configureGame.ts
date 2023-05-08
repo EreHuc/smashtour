@@ -1,16 +1,16 @@
-import { Game, Token } from '../object'
+import { Game, Player } from '../object'
 import { CustomError } from '../utils'
 
 const configureGameEvent = (game: Game) => {
-    const players: Token[] = []
-    players.push(new Token(0, $('#player_0').val() as string, $('#player_0_icon').val() as string))
-    players.push(new Token(1, $('#player_1').val() as string, $('#player_1_icon').val() as string))
+    const players: Player[] = []
+    players.push(new Player(0, $('#player_0').val() as string, $('#player_0_icon').val() as string))
+    players.push(new Player(1, $('#player_1').val() as string, $('#player_1_icon').val() as string))
     let player2 = $('#player_2')
     if (player2.val()) {
-        players.push(new Token(2, player2.val() as string, $('#player_2_icon').val() as string))
+        players.push(new Player(2, player2.val() as string, $('#player_2_icon').val() as string))
         let player3 = $('#player_3')
         if (player3.val()) {
-            players.push(new Token(3, player3.val() as string, $('#player_3_icon').val() as string))
+            players.push(new Player(3, player3.val() as string, $('#player_3_icon').val() as string))
         }
     }
     game.configureGame(players)

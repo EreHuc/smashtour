@@ -1,9 +1,9 @@
-export class Sprite {
+export class Sprite extends Image {
     displayName: string
-    image: HTMLImageElement
 
-    constructor(name: string, image: HTMLImageElement) {
+    constructor(name: string, src: string) {
+        super()
         this.displayName = name.replace(/_/g, ' ')
-        this.image = image
+        this.src = src
     }
 }
