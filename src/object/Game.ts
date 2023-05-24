@@ -497,7 +497,7 @@ export class Game extends GameCanvas {
     }
 
     private giveRandomSlotOwnership(
-        player: Player,
+        player?: Player,
         slots = this.slots.filter((slot) => slot.owner === undefined),
         loser?: Player
     ) {
@@ -507,18 +507,24 @@ export class Game extends GameCanvas {
         if (notOwnedSlot.length) {
             const randomSlot = notOwnedSlot[Math.floor(Math.random() * notOwnedSlot.length)]
             this.giveSlotOwnership(player, randomSlot)
-            this.uiCanvas.addGeneralInfos(
-                `${player.name} randomly own ${randomSlot.character?.friendlyName.join(' ')}${
-                    loser ? ` from ${loser.name}` : ''
-                }`
-            )
-            this.message(
-                `${player.name} randomly own ${randomSlot.character?.friendlyName.join(' ')}${
-                    loser ? ` from ${loser.name}` : ''
-                }`
-            )
+            if (player) {
+                this.uiCanvas.addGeneralInfos(
+                    `${player.name} randomly own ${randomSlot.character?.friendlyName}${
+                        loser ? ` from ${loser.name}` : ''
+                    }`
+                )
+                this.message(
+                    `${player.name} randomly own ${randomSlot.character?.friendlyName}${
+                        loser ? ` from ${loser.name}` : ''
+                    }`
+                )
+            } else {
+                this.uiCanvas.addGeneralInfos(`${loser?.name} randomly lost ${randomSlot.character?.friendlyName}`)
+                this.message(`${loser?.name} randomly lost ${randomSlot.character?.friendlyName}`)
+            }
             return true
         }
+
         return false
     }
 
@@ -561,10 +567,7 @@ export class Game extends GameCanvas {
                 this.giveRandomSlotOwnership(player)
                 break
             case SquareType.parking:
-                const slotsOwnByTax = this.slots.filter((slot) => slot.owner === 'tax')
-                slotsOwnByTax.forEach((slot) => {
-                    this.giveSlotOwnership(player, slot)
-                })
+                this.setUpgradeBlink(player)
                 break
             case SquareType.chance:
                 const card = this.selectCard()
@@ -612,7 +615,6 @@ export class Game extends GameCanvas {
                         reevaluate = true
                         break
                     case Cards.playAsRandom:
-                        this.processPlayAsRandom()
                         this.uiCanvas.addExtraInfos(playerIndex, 'Play as random')
                         this.message(`${player.name}: Play as random`)
                         break
@@ -672,18 +674,18 @@ export class Game extends GameCanvas {
         this.uiCanvas.addBattleInfos(
             player,
             playerIndex,
-            `${player.name}: ${slot.character?.friendlyName.join(' ')} - ${handicap}%`
+            `${player.name}: ${slot.character?.friendlyName} - ${handicap}%`
         )
         if (logs) {
             if (slot.character) {
-                this.message(`${player.name}: ${slot.character?.friendlyName.join(' ')} - ${handicap}%`)
+                this.message(`${player.name}: ${slot.character?.friendlyName} - ${handicap}%`)
             }
         }
     }
 
     private processDiceResult(player: Player, dice: IndividualDieResult[]) {
         const [die1, die2] = dice
-        // const [die1, die2] = [{ value: 0 }, { value: 0 }] as IndividualDieResult[]
+        // const [die1, die2] = [{ value: 12 }, { value: 0 }] as IndividualDieResult[]
         this.uiCanvas.addDiceResult(
             this.players.findIndex((p) => p.id === player.id),
             [die1, die2]
@@ -729,35 +731,18 @@ export class Game extends GameCanvas {
         if (charOwnedByLoser.length) {
             switch (loserSlot.type) {
                 case SquareType.tax:
-                    this.giveRandomSlotOwnership({ name: 'Tax', id: 'tax' } as Player, charOwnedByLoser, currentLoser)
+                    this.giveRandomSlotOwnership(undefined, charOwnedByLoser, currentLoser)
                     break
                 default:
                     switch (this.slots[currentLoser.slotIndex].upgrade) {
                         // HOTEL
                         case 2:
-                            this.setSlotBlink(currentLoser)
                             this.uiCanvas.addGeneralInfos(`${this.winner.name} choose a character to gain`)
                             this.message(`${this.winner.name} choose a character to gain`)
-                            const handler = (ev: MouseEvent) => {
-                                const x = ev.offsetX
-                                const y = ev.offsetY
-                                charOwnedByLoser.forEach((slot) => {
-                                    if (this.isInSlot(slot, x, y)) {
-                                        this.giveSlotOwnership(this.winner, slot)
-                                        this.uiCanvas.addGeneralInfos(
-                                            `${currentLoser.name} lost ${slot?.character?.friendlyName.join(' ')}`
-                                        )
-                                        this.message(
-                                            `${currentLoser.name} lost ${slot?.character?.friendlyName.join(' ')}`
-                                        )
-                                        this.resetBlink()
-                                        this.losers = this.losers.slice(1)
-                                        this.canvas.removeEventListener('mousedown', handler)
-                                        this.processLosers(this.losers)
-                                    }
-                                })
-                            }
-                            this.canvas.addEventListener('mousedown', handler)
+                            this.setStealBlink(currentLoser).then(() => {
+                                this.losers = this.losers.slice(1)
+                                this.processLosers(this.losers)
+                            })
                             break
                         // HOUSE
                         case 1:
@@ -809,8 +794,8 @@ export class Game extends GameCanvas {
 
             if (winnerSlot.owner === undefined) {
                 this.giveSlotOwnership(winner, winnerSlot)
-                this.uiCanvas.addGeneralInfos(`${winner.name} now own ${winnerSlot?.character?.friendlyName.join(' ')}`)
-                this.message(`${winner.name} now own ${winnerSlot?.character?.friendlyName.join(' ')}`)
+                this.uiCanvas.addGeneralInfos(`${winner.name} now own ${winnerSlot?.character?.friendlyName}`)
+                this.message(`${winner.name} now own ${winnerSlot?.character?.friendlyName}`)
                 return Promise.resolve(false)
             }
 
@@ -822,26 +807,9 @@ export class Game extends GameCanvas {
             return Promise.resolve(true)
         }
 
-        const handler = (ev: MouseEvent) => {
-            const x = ev.offsetX
-            const y = ev.offsetY
-
-            this.slots.forEach((slot) => {
-                if (this.isInSlot(slot, x, y) && slot.blink && slot.owner === winner.id) {
-                    slot.upgrade += 1
-                }
-            })
-            this.resetBlink()
-            this.canvas.removeEventListener('mousedown', handler)
-        }
-
         return handleWinner().then((isWinnerUpgrade) => {
             if (isWinnerUpgrade) {
-                this.setSlotBlink(
-                    winner,
-                    this.slots.filter((slot) => slot.upgrade < 2 && slot.type !== SquareType.station)
-                )
-                this.canvas.addEventListener('mousedown', handler)
+                this.setUpgradeBlink(winner)
             }
         })
     }
@@ -930,33 +898,8 @@ export class Game extends GameCanvas {
     }
 
     private processDestroyProperty(player: Player) {
-        const handler = (ev: MouseEvent) => {
-            const x = ev.offsetX
-            const y = ev.offsetY
-            this.slots.forEach((slot) => {
-                if (this.isInSlot(slot, x, y) && slot.blink && slot.owner !== player.id) {
-                    this.giveSlotOwnership(undefined, slot)
-                    this.resetBlink()
-                    this.message(
-                        `${player.name} destroy ${slot.character?.friendlyName} from ${
-                            this.players.find((p) => p.id === slot.owner)?.name
-                        }`
-                    )
-                    this.uiCanvas.addGeneralInfos(
-                        `${player.name} destroy ${slot.character?.friendlyName} from ${
-                            this.players.find((p) => p.id === slot.owner)?.name
-                        }`
-                    )
-                    this.canvas.removeEventListener('click', handler)
-                }
-            })
-        }
-        this.canvas.addEventListener('click', handler)
-        this.slots.forEach((slot) => {
-            if (slot.owner && slot.owner !== player.id) {
-                slot.blink = true
-            }
-        })
+        this.setDestroyBlink(player)
+
         return this.draw().then(() => true)
     }
 
@@ -995,7 +938,6 @@ export class Game extends GameCanvas {
             slots.findIndex((slot) => slot.character && this.settings.topTiers.includes(slot.character.name)) + 1
 
         player.slotIndex += nextTopTierIndex
-        console.log('processGoToNextTopTier@Game.ts -', nextTopTierIndex, this.slots[player.slotIndex])
         return Promise.resolve(this.slots[player.slotIndex])
     }
 
@@ -1018,6 +960,7 @@ export class Game extends GameCanvas {
         const nextHeavyIndex =
             slots.findIndex((slot) => slot.character && this.settings.heavies.includes(slot.character.name)) + 1
         player.slotIndex += nextHeavyIndex
+        console.log('processGoToNextHeavies@Game.ts -', this.slots[player.slotIndex])
         return Promise.resolve(this.slots[player.slotIndex])
     }
 
@@ -1083,16 +1026,85 @@ export class Game extends GameCanvas {
         return Promise.resolve(this.slots[player.slotIndex])
     }
 
-    private processPlayAsRandom() {
-        return { character: { friendlyName: ['Random'] } } as Slot
+    /* BLINK */
+    private setUpgradeBlink(player: Player) {
+        const handler = (ev: MouseEvent) => {
+            const x = ev.offsetX
+            const y = ev.offsetY
+
+            this.slots.forEach((slot) => {
+                if (this.isInSlot(slot, x, y) && slot.blink && slot.owner === player.id) {
+                    slot.upgrade += 1
+                    this.message(`${player.name} upgrade ${slot.character?.friendlyName}`)
+                    this.uiCanvas.addGeneralInfos(`${player.name} upgrade ${slot.character?.friendlyName}`)
+                }
+            })
+            this.resetBlink()
+            this.canvas.removeEventListener('mousedown', handler)
+        }
+        const slots = this.slots.filter((s) => s.owner === player.id && s.upgrade < 2 && s.type !== SquareType.station)
+        if (slots.length) {
+            this.setPlayerPropertyBlink(slots)
+            this.canvas.addEventListener('mousedown', handler)
+        }
     }
 
-    /* BLINK */
-    private setSlotBlink(player: Player, slots: Slot[] = this.slots) {
-        slots.forEach((slot) => {
-            if (slot?.owner === player.id) {
-                slot.blink = true
+    private setStealBlink(player: Player) {
+        return new Promise<void>((resolve) => {
+            const handler = (ev: MouseEvent) => {
+                const x = ev.offsetX
+                const y = ev.offsetY
+                this.slots.forEach((slot) => {
+                    if (this.isInSlot(slot, x, y)) {
+                        this.giveSlotOwnership(this.winner, slot)
+                        this.uiCanvas.addGeneralInfos(`${player.name} lost ${slot?.character?.friendlyName}`)
+                        this.message(`${player.name} lost ${slot?.character?.friendlyName}`)
+                        this.resetBlink()
+                        resolve()
+                        this.canvas.removeEventListener('mousedown', handler)
+                    }
+                })
             }
+            const slots = this.slots.filter((s) => s.owner !== player.id && !s.locked)
+            if (slots.length) {
+                this.setPlayerPropertyBlink(slots)
+                this.canvas.addEventListener('mousedown', handler)
+            }
+        })
+    }
+
+    private setDestroyBlink(player: Player) {
+        const handler = (ev: MouseEvent) => {
+            const x = ev.offsetX
+            const y = ev.offsetY
+            this.slots.forEach((slot) => {
+                if (this.isInSlot(slot, x, y) && slot.blink && slot.owner !== player.id) {
+                    this.giveSlotOwnership(undefined, slot)
+                    this.resetBlink()
+                    this.message(
+                        `${player.name} destroy ${slot.character?.friendlyName} from ${
+                            this.players.find((p) => p.id === slot.owner)?.name
+                        }`
+                    )
+                    this.uiCanvas.addGeneralInfos(
+                        `${player.name} destroy ${slot.character?.friendlyName} from ${
+                            this.players.find((p) => p.id === slot.owner)?.name
+                        }`
+                    )
+                    this.canvas.removeEventListener('click', handler)
+                }
+            })
+        }
+        const slots = this.slots.filter((s) => s.owner && s.owner !== player.id)
+        if (slots.length) {
+            this.setPlayerPropertyBlink(slots)
+            this.canvas.addEventListener('click', handler)
+        }
+    }
+
+    private setPlayerPropertyBlink(slots: Slot[]) {
+        slots.forEach((s) => {
+            s.blink = true
         })
     }
 

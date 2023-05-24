@@ -42,7 +42,7 @@ Available game at: https://smashmonopoly.netlify.app/
   - On a property with an hotel owned by the winner
     - The winner chose a non-locked property to steal
   - On tax
-    - Tax steal you a random non-locked property
+    - You lost a random non-locked property
 
 #### If you win
   - If you were jailed

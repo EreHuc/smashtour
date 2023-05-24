@@ -231,7 +231,7 @@ export class UiCanvas extends DrawSettings implements Draw {
                             ctx.font = `${height / 2}px Futura`
                             ctx.textBaseline = 'middle'
                             ctx.lineWidth = 3
-                            const { width } = ctx.measureText(character.friendlyName.join(' '))
+                            const { width } = ctx.measureText(character.friendlyName)
                             switch (playerIndex) {
                                 case '0':
                                     ctx.beginPath()
@@ -240,7 +240,7 @@ export class UiCanvas extends DrawSettings implements Draw {
                                     ctx.fill()
                                     ctx.closePath()
                                     ctx.fillStyle = color(propertyColor ?? 'black').isDark() ? 'white' : 'black'
-                                    ctx.fillText(character.friendlyName.join(' '), size + 10 + 8, height / 2)
+                                    ctx.fillText(character.friendlyName, size + 10 + 8, height / 2)
                                     break
                                 case '1':
                                     ctx.beginPath()
@@ -249,7 +249,7 @@ export class UiCanvas extends DrawSettings implements Draw {
                                     ctx.fill()
                                     ctx.closePath()
                                     ctx.fillStyle = color(propertyColor ?? 'black').isDark() ? 'white' : 'black'
-                                    ctx.fillText(character.friendlyName.join(' '), -10 - 8, height / 2)
+                                    ctx.fillText(character.friendlyName, -10 - 8, height / 2)
                                     break
                                 case '2':
                                     ctx.beginPath()
@@ -258,7 +258,7 @@ export class UiCanvas extends DrawSettings implements Draw {
                                     ctx.fill()
                                     ctx.closePath()
                                     ctx.fillStyle = color(propertyColor ?? 'black').isDark() ? 'white' : 'black'
-                                    ctx.fillText(character.friendlyName.join(' '), size + 10 + 8, height / 2)
+                                    ctx.fillText(character.friendlyName, size + 10 + 8, height / 2)
                                     break
                                 default:
                                     ctx.beginPath()
@@ -267,7 +267,7 @@ export class UiCanvas extends DrawSettings implements Draw {
                                     ctx.fill()
                                     ctx.closePath()
                                     ctx.fillStyle = color(propertyColor ?? 'black').isDark() ? 'white' : 'black'
-                                    ctx.fillText(character.friendlyName.join(' '), -8, height / 2)
+                                    ctx.fillText(character.friendlyName, -8, height / 2)
                                     break
                             }
                         }
