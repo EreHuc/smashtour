@@ -64,13 +64,10 @@ export class UiCanvas extends DrawSettings implements Draw {
                 rect.closePath()
                 break
             case 1:
-                rect.moveTo(this.canvasWidth / 2 + 10, this.canvasHeight - 10)
-                rect.lineTo(this.canvasWidth / 2 + 10, this.canvasHeight - 10 - this.playerCardHeight)
-                rect.lineTo(
-                    this.canvasWidth / 2 + 10 + this.playerCardWidth,
-                    this.canvasHeight - 10 - this.playerCardHeight
-                )
-                rect.lineTo(this.canvasWidth / 2 + 10 + this.playerCardWidth, this.canvasHeight - 10)
+                rect.moveTo(this.canvasWidth / 2 + 10, 10)
+                rect.lineTo(this.canvasWidth / 2 + 10, 10 + this.playerCardHeight)
+                rect.lineTo(this.canvasWidth / 2 + 10 + this.playerCardWidth, 10 + this.playerCardHeight)
+                rect.lineTo(this.canvasWidth / 2 + 10 + this.playerCardWidth, 10)
                 break
             case 2:
                 rect.moveTo(this.canvasWidth / 2 - 10, this.canvasHeight - 10)
@@ -82,10 +79,13 @@ export class UiCanvas extends DrawSettings implements Draw {
                 rect.lineTo(this.canvasWidth / 2 - 10 - this.playerCardWidth, this.canvasHeight - 10)
                 break
             default:
-                rect.moveTo(this.canvasWidth / 2 + 10, 10)
-                rect.lineTo(this.canvasWidth / 2 + 10, 10 + this.playerCardHeight)
-                rect.lineTo(this.canvasWidth / 2 + 10 + this.playerCardWidth, 10 + this.playerCardHeight)
-                rect.lineTo(this.canvasWidth / 2 + 10 + this.playerCardWidth, 10)
+                rect.moveTo(this.canvasWidth / 2 + 10, this.canvasHeight - 10)
+                rect.lineTo(this.canvasWidth / 2 + 10, this.canvasHeight - 10 - this.playerCardHeight)
+                rect.lineTo(
+                    this.canvasWidth / 2 + 10 + this.playerCardWidth,
+                    this.canvasHeight - 10 - this.playerCardHeight
+                )
+                rect.lineTo(this.canvasWidth / 2 + 10 + this.playerCardWidth, this.canvasHeight - 10)
         }
         return this.context.isPointInPath(rect, x, y)
     }
@@ -104,20 +104,15 @@ export class UiCanvas extends DrawSettings implements Draw {
                 rect.closePath()
                 break
             case 1:
-                rect.moveTo(this.canvasWidth / 2 + 10, this.canvasHeight - 20 - this.playerCardHeight)
-                rect.lineTo(
-                    this.canvasWidth / 2 + 10,
-                    this.canvasHeight - 20 - this.playerCardHeight - this.playerCardHeight
-                )
+                rect.moveTo(this.canvasWidth / 2 + 10, 20 + this.playerCardHeight)
+                rect.lineTo(this.canvasWidth / 2 + 10, 20 + this.playerCardHeight + this.playerCardHeight)
                 rect.lineTo(
                     this.canvasWidth / 2 + 10 + this.playerCardWidth,
-                    this.canvasHeight - 20 - this.playerCardHeight - this.playerCardHeight
+                    20 + this.playerCardHeight + this.playerCardHeight
                 )
-                rect.lineTo(
-                    this.canvasWidth / 2 + 10 + this.playerCardWidth,
-                    this.canvasHeight - 20 - this.playerCardHeight
-                )
+                rect.lineTo(this.canvasWidth / 2 + 10 + this.playerCardWidth, 20 + this.playerCardHeight)
                 break
+
             case 2:
                 rect.moveTo(this.canvasWidth / 2 - 10, this.canvasHeight - 20 - this.playerCardHeight)
                 rect.lineTo(
@@ -134,13 +129,19 @@ export class UiCanvas extends DrawSettings implements Draw {
                 )
                 break
             default:
-                rect.moveTo(this.canvasWidth / 2 + 10, 20 + this.playerCardHeight)
-                rect.lineTo(this.canvasWidth / 2 + 10, 20 + this.playerCardHeight + this.playerCardHeight)
+                rect.moveTo(this.canvasWidth / 2 + 10, this.canvasHeight - 20 - this.playerCardHeight)
+                rect.lineTo(
+                    this.canvasWidth / 2 + 10,
+                    this.canvasHeight - 20 - this.playerCardHeight - this.playerCardHeight
+                )
                 rect.lineTo(
                     this.canvasWidth / 2 + 10 + this.playerCardWidth,
-                    20 + this.playerCardHeight + this.playerCardHeight
+                    this.canvasHeight - 20 - this.playerCardHeight - this.playerCardHeight
                 )
-                rect.lineTo(this.canvasWidth / 2 + 10 + this.playerCardWidth, 20 + this.playerCardHeight)
+                rect.lineTo(
+                    this.canvasWidth / 2 + 10 + this.playerCardWidth,
+                    this.canvasHeight - 20 - this.playerCardHeight
+                )
         }
         return this.context.isPointInPath(rect, x, y)
     }
@@ -274,76 +275,121 @@ export class UiCanvas extends DrawSettings implements Draw {
 
     private drawCardCharacters(player: Player, index: number) {
         ownContext(this.context, (ctx) => {
+            ctx.fillStyle = 'white'
+            ctx.lineWidth = 3
+            ctx.textAlign = 'center'
+            ctx.textBaseline = 'middle'
+            ctx.font = '15px Futura'
             switch (index) {
                 case 0:
+                    ctx.translate(this.canvasWidth / 2 - 10 - this.playerCardWidth, 10)
                     if (player.freeJailCard) {
-                        ctx.fillStyle = 'green'
-                        ctx.fillRect(this.canvasWidth / 2 - 10, 10, -this.playerCardWidth, this.playerCardHeight)
+                        ctx.beginPath()
+                        ctx.rect(0, 0, this.playerCardWidth, this.playerCardHeight)
+                        ctx.fill()
+                        ctx.stroke()
+                        ctx.closePath()
                     }
                     if (player.chooseCharCard) {
-                        ctx.fillStyle = 'yellow'
-                        ctx.fillRect(
-                            this.canvasWidth / 2 - 10,
-                            20 + this.playerCardHeight,
-                            -this.playerCardWidth,
-                            this.playerCardHeight
+                        ctx.beginPath()
+                        ctx.rect(0, 10 + this.playerCardHeight, this.playerCardWidth, this.playerCardHeight)
+                        ctx.fill()
+                        ctx.stroke()
+                        ctx.closePath()
+                        ctx.beginPath()
+                        ctx.fillStyle = 'black'
+                        ctx.fillText(
+                            'Chose Char',
+                            this.playerCardWidth / 2,
+                            this.playerCardHeight / 2 + 10 + this.playerCardHeight
                         )
+                        ctx.closePath()
                     }
                     break
                 case 1:
+                    ctx.translate(this.canvasWidth / 2 + 10, 10)
                     if (player.freeJailCard) {
-                        ctx.fillStyle = 'green'
-                        ctx.fillRect(
-                            this.canvasWidth / 2 - 10,
-                            this.canvasHeight - 10,
-                            -this.playerCardWidth,
-                            -this.playerCardHeight
-                        )
+                        ctx.beginPath()
+                        ctx.rect(0, 0, this.playerCardWidth, this.playerCardHeight)
+                        ctx.fill()
+                        ctx.stroke()
+                        ctx.closePath()
                     }
                     if (player.chooseCharCard) {
-                        ctx.fillStyle = 'yellow'
-                        ctx.fillRect(
-                            this.canvasWidth / 2 - 10,
-                            this.canvasHeight - 20 - this.playerCardHeight,
-                            -this.playerCardWidth,
-                            -this.playerCardHeight
+                        ctx.beginPath()
+                        ctx.rect(0, 10 + this.playerCardHeight, this.playerCardWidth, this.playerCardHeight)
+                        ctx.fill()
+                        ctx.stroke()
+                        ctx.closePath()
+                        ctx.beginPath()
+                        ctx.fillStyle = 'black'
+                        ctx.fillText(
+                            'Chose Char',
+                            this.playerCardWidth / 2,
+                            this.playerCardHeight / 2 + 10 + this.playerCardHeight
                         )
+                        ctx.closePath()
                     }
                     break
                 case 2:
+                    ctx.translate(
+                        this.canvasWidth / 2 - 10 - this.playerCardWidth,
+                        this.canvasHeight - 10 - this.playerCardHeight
+                    )
                     if (player.freeJailCard) {
-                        ctx.fillStyle = 'green'
-                        ctx.fillRect(this.canvasWidth / 2 + 10, 10, this.playerCardWidth, this.playerCardHeight)
+                        ctx.beginPath()
+                        ctx.rect(0, 0, this.playerCardWidth, this.playerCardHeight)
+                        ctx.fill()
+                        ctx.stroke()
+                        ctx.closePath()
                     }
                     if (player.chooseCharCard) {
-                        ctx.fillStyle = 'yellow'
-                        ctx.fillRect(
-                            this.canvasWidth / 2 + 10,
-                            20 + this.playerCardHeight,
-                            this.playerCardWidth,
-                            this.playerCardHeight
+                        ctx.beginPath()
+                        ctx.rect(0, -10 - this.playerCardHeight, this.playerCardWidth, this.playerCardHeight)
+                        ctx.fill()
+                        ctx.stroke()
+                        ctx.closePath()
+                        ctx.beginPath()
+                        ctx.fillStyle = 'black'
+                        ctx.fillText(
+                            'Chose Char',
+                            this.playerCardWidth / 2,
+                            this.playerCardHeight / 2 - 10 - this.playerCardHeight
                         )
+                        ctx.closePath()
                     }
                     break
                 default:
+                    ctx.translate(this.canvasWidth / 2 + 10, this.canvasHeight - 10 - this.playerCardHeight)
                     if (player.freeJailCard) {
-                        ctx.fillStyle = 'green'
-                        ctx.fillRect(
-                            this.canvasWidth / 2 + 10,
-                            this.canvasHeight - 10,
-                            this.playerCardWidth,
-                            -this.playerCardHeight
-                        )
+                        ctx.beginPath()
+                        ctx.rect(0, 0, this.playerCardWidth, this.playerCardHeight)
+                        ctx.fill()
+                        ctx.stroke()
+                        ctx.closePath()
                     }
                     if (player.chooseCharCard) {
-                        ctx.fillStyle = 'yellow'
-                        ctx.fillRect(
-                            this.canvasWidth / 2 + 10,
-                            this.canvasHeight - 20 - this.playerCardHeight,
-                            this.playerCardWidth,
-                            -this.playerCardHeight
+                        ctx.beginPath()
+                        ctx.rect(0, -10 - this.playerCardHeight, this.playerCardWidth, this.playerCardHeight)
+                        ctx.fill()
+                        ctx.stroke()
+                        ctx.closePath()
+                        ctx.beginPath()
+                        ctx.fillStyle = 'black'
+                        ctx.fillText(
+                            'Chose Char',
+                            this.playerCardWidth / 2,
+                            this.playerCardHeight / 2 - 10 - this.playerCardHeight
                         )
+                        ctx.closePath()
                     }
+            }
+
+            if (player.freeJailCard) {
+                ctx.beginPath()
+                ctx.fillStyle = 'black'
+                ctx.fillText('Free Jail', this.playerCardWidth / 2, this.playerCardHeight / 2)
+                ctx.closePath()
             }
         })
     }

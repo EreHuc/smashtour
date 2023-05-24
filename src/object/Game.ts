@@ -8,8 +8,6 @@ import { Player } from './Player.ts'
 import { cards, playerTokens } from '../const'
 import { closestHandicap, GameError, shuffleArray } from '../utils'
 
-//TODO: implement steal and randomly lose no LOCKED slot
-
 export class Game extends GameCanvas {
     get currentStep(): (typeof this.steps)[number] {
         return this._currentStep
@@ -1055,17 +1053,11 @@ export class Game extends GameCanvas {
         const handler = (ev: MouseEvent) => {
             const x = ev.offsetX
             const y = ev.offsetY
+            const playerIndex = this.players.findIndex((p) => p.id === player.id)
 
-            if (
-                player.chooseCharCard &&
-                this.uiCanvas.isInChooseCharCard(
-                    this.players.findIndex((p) => p.id === player.id),
-                    x,
-                    y
-                )
-            ) {
+            if (player.chooseCharCard && this.uiCanvas.isInChooseCharCard(playerIndex, x, y)) {
                 player.chooseCharCard = false
-                this.uiCanvas.addGeneralInfos(`${player.name} choose his character`)
+                this.uiCanvas.addExtraInfos(playerIndex, `${player.name} choose his character`)
                 this.message(`${player.name} choose his character`)
                 this.drawBoard(this.slots, this.players)
                 this.canvas.removeEventListener('mousedown', handler)
