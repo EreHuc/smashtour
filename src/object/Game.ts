@@ -8,6 +8,8 @@ import { Player } from './Player.ts'
 import { cards, playerTokens } from '../const'
 import { closestHandicap, GameError, shuffleArray } from '../utils'
 
+//TODO: implement steal and randomly lose no LOCKED slot
+
 export class Game extends GameCanvas {
     get currentStep(): (typeof this.steps)[number] {
         return this._currentStep
@@ -477,8 +479,13 @@ export class Game extends GameCanvas {
     private giveSlotOwnership(player: Player | undefined, slot: Slot) {
         slot.owner = player ? player.id : player
         // slot.upgrade = 0
-        if (player && slot.propertyColor) {
-            const slotsInSet = this.slots.filter(({ propertyColor }) => propertyColor === slot.propertyColor)
+        let slotsInSet: Slot[] = []
+        if (player) {
+            if (slot.propertyColor) {
+                slotsInSet = this.slots.filter(({ propertyColor }) => propertyColor === slot.propertyColor)
+            } else if (slot.type === SquareType.station) {
+                slotsInSet = this.slots.filter(({ type }) => type === SquareType.station)
+            }
             if (slotsInSet.every(({ owner }) => owner === player.id)) {
                 slotsInSet.forEach((slotInSet) => {
                     slotInSet.locked = true
@@ -733,7 +740,7 @@ export class Game extends GameCanvas {
 
         const loserSlot = this.slots[currentLoser.slotIndex]
 
-        const charOwnedByLoser = this.slots.filter((slot) => slot?.owner === currentLoser.id)
+        const charOwnedByLoser = this.slots.filter((slot) => slot?.owner === currentLoser.id && !slot.locked)
         if (charOwnedByLoser.length) {
             switch (loserSlot.type) {
                 case SquareType.tax:
