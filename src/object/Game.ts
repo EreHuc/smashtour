@@ -547,7 +547,6 @@ export class Game extends GameCanvas {
 
     private async processLandedSlot(player: Player): Promise<void> {
         let landedSlot = this.slots[player.slotIndex]
-        let handicap = landedSlot.owner ? (landedSlot.owner === player.id ? 0 : landedSlot.handicap) : 0
         let reevaluate = false
         const playerIndex = this.players.findIndex((p) => p.id === player.id)
 
@@ -561,12 +560,6 @@ export class Game extends GameCanvas {
                 break
             case SquareType.start:
                 this.giveRandomSlotOwnership(player)
-                break
-            case SquareType.station:
-                handicap =
-                    handicap *
-                    this.slots.filter((slot) => slot.owner === landedSlot.owner && slot.type === SquareType.station)
-                        .length
                 break
             case SquareType.parking:
                 const slotsOwnByTax = this.slots.filter((slot) => slot.owner === 'tax')
@@ -645,14 +638,6 @@ export class Game extends GameCanvas {
                 }
                 break
             default:
-                if (landedSlot.owner && landedSlot.propertyColor) {
-                    const isFullSet = this.slots
-                        .filter((slot) => slot.propertyColor === landedSlot.propertyColor)
-                        .every((slot) => slot.owner === landedSlot.owner)
-                    if (isFullSet) {
-                        handicap += 50
-                    }
-                }
         }
 
         if (reevaluate) {
@@ -668,8 +653,7 @@ export class Game extends GameCanvas {
         let handicap = slot.owner ? (slot.owner === player.id ? 0 : slot.handicap) : 0
         if (slot.type === SquareType.station) {
             handicap =
-                handicap *
-                this.slots.filter((slot) => slot.owner === slot.owner && slot.type === SquareType.station).length
+                handicap * this.slots.filter((s) => s.owner === slot.owner && s.type === SquareType.station).length
         } else if (slot.owner && slot.propertyColor) {
             const isFullSet = this.slots
                 .filter((s) => s.propertyColor === slot.propertyColor)

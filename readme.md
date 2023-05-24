@@ -53,6 +53,8 @@ Available game at: https://smashmonopoly.netlify.app/
     - This property is now yours, congratulation !
   - On a property own by you
     - Upgrade your property level by 1 (expect station) to a maximum of an hotel
+  - Others case
+    - Select a property to upgrade
 
 ### 4. End of the turn
   - 2 players
