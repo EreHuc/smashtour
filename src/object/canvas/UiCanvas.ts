@@ -172,6 +172,9 @@ export class UiCanvas extends DrawSettings implements Draw {
 
     public addGeneralInfos(message: string) {
         this.generalInfos.push(message)
+        if (this.generalInfos.length > 4) {
+            this.generalInfos = this.generalInfos.slice(-4)
+        }
     }
 
     public resetGeneralInfos() {

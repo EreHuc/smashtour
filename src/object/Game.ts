@@ -614,6 +614,7 @@ export class Game extends GameCanvas {
                     case Cards.playAsRandom:
                         this.processPlayAsRandom()
                         this.uiCanvas.addExtraInfos(playerIndex, 'Play as random')
+                        this.message(`${player.name}: Play as random`)
                         break
                     case Cards.goToNextHeavies:
                         await this.processGoToNextHeavies(player)
@@ -624,15 +625,19 @@ export class Game extends GameCanvas {
                         break
                     case Cards.hitOneFreeMove:
                         this.uiCanvas.addExtraInfos(playerIndex, 'Hit one free move')
+                        this.message(`${player.name}: Hit one free move`)
                         break
                     case Cards.pickStage:
                         this.uiCanvas.addExtraInfos(playerIndex, 'Pick the next stage')
+                        this.message(`${player.name}: Pick the next stage`)
                         break
                     case Cards.randomStage:
                         this.uiCanvas.addExtraInfos(playerIndex, 'Random stage !')
+                        this.message(`Random stage !`)
                         break
                     case Cards.metalFight:
                         this.uiCanvas.addExtraInfos(playerIndex, 'Metal fight !')
+                        this.message(`Metal fight !`)
                         break
                 }
                 break
@@ -932,6 +937,16 @@ export class Game extends GameCanvas {
                 if (this.isInSlot(slot, x, y) && slot.blink && slot.owner !== player.id) {
                     this.giveSlotOwnership(undefined, slot)
                     this.resetBlink()
+                    this.message(
+                        `${player.name} destroy ${slot.character?.friendlyName} from ${
+                            this.players.find((p) => p.id === slot.owner)?.name
+                        }`
+                    )
+                    this.uiCanvas.addGeneralInfos(
+                        `${player.name} destroy ${slot.character?.friendlyName} from ${
+                            this.players.find((p) => p.id === slot.owner)?.name
+                        }`
+                    )
                     this.canvas.removeEventListener('click', handler)
                 }
             })
@@ -1021,8 +1036,8 @@ export class Game extends GameCanvas {
             ) {
                 player.inJail = undefined
                 player.freeJailCard = false
-                this.uiCanvas.addGeneralInfos(`${player.name} is now free`)
-                this.message(`${player.name} is now free`)
+                this.uiCanvas.addGeneralInfos(`${player.name} use free card and is now free`)
+                this.message(`${player.name} use free card and is now free`)
                 this.drawBoard(this.slots, this.players)
                 this.canvas.removeEventListener('mousedown', handler)
             }
@@ -1037,10 +1052,14 @@ export class Game extends GameCanvas {
             const y = ev.offsetY
             const playerIndex = this.players.findIndex((p) => p.id === player.id)
 
-            if (player.chooseCharCard && this.uiCanvas.isInChooseCharCard(playerIndex, x, y)) {
+            if (
+                ['rollDice', 'battle'].includes(this.currentStep) &&
+                player.chooseCharCard &&
+                this.uiCanvas.isInChooseCharCard(playerIndex, x, y)
+            ) {
                 player.chooseCharCard = false
-                this.uiCanvas.addExtraInfos(playerIndex, `${player.name} choose his character`)
-                this.message(`${player.name} choose his character`)
+                this.uiCanvas.addExtraInfos(playerIndex, `Free character pick`)
+                this.message(`${player.name} use free character pick card`)
                 this.drawBoard(this.slots, this.players)
                 this.canvas.removeEventListener('mousedown', handler)
             }

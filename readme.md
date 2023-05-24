@@ -73,6 +73,9 @@ Available game at: https://smashmonopoly.netlify.app/
 
 ## How to lock property
   - Own all the property with same color ( or all station ) and those property will be locked
+## Cards
+  - Free jail can be used by clicking on the card when in jail
+  - Free character can be use by clicking on the card when rolling dice or before choosing winner
 
 ## Credits
 Based on https://smashmonopoly.com made by [Little Z](https://www.youtube.com/c/LittleZubat) and [El Xando](https://www.youtube.com/ElXando1993)
