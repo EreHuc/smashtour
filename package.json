@@ -5,6 +5,7 @@
     "main": "utils/extract.js",
     "scripts": {
         "dev": "vite",
+        "dev_v2": "vite index.html",
         "build": "tsc && vite build",
         "preview": "vite preview"
     },
@@ -19,7 +20,10 @@
         "vite": "^4.3.5"
     },
     "dependencies": {
+        "@3d-dice/dice-box": "^1.0.8",
+        "@types/color": "^3.0.3",
         "bootstrap-select": "1.13.4",
+        "color": "^4.2.3",
         "jquery": "3.6.1"
     }
 }

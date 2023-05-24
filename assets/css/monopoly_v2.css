@@ -1,0 +1,131 @@
+* {
+  box-sizing: border-box;
+  --black-text: rgb(51,51,51);
+  --white-text: white;
+}
+
+body {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-image: url('../img/background_skyline.jpg');
+  background-size: cover;
+  font-family: 'Futura PT Heavy';
+}
+
+p {
+  color: var(--white-text);
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  font-size: 18px;
+}
+
+button {
+  background-color: #1fb25a;
+  border-radius: 4px;
+  border: 3px solid black;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 16px;
+  transition: background-color 100ms;
+  vertical-align: baseline;
+}
+button.small {
+  padding: 8px;
+}
+
+button:hover {
+  background-color: #0072bb;
+}
+
+button:active {
+  background-color: #2b669a;
+}
+
+input {
+  border: 3px solid black;
+  border-radius: 4px;
+  padding: 8px
+}
+
+.hidden {
+  display: none!important;
+}
+
+.left, .right {
+  width: 200px;
+}
+
+.center {
+  width: max-content;
+}
+
+#game_div {
+  display: flex;
+  gap: 8px;
+  /*display: grid;*/
+  /*grid-template-columns: 1fr max-content 1fr;*/
+  justify-content: space-evenly;
+  height: 100vh;
+}
+
+#game_div > div {
+  align-self: center;
+  justify-self: center;
+}
+#game_div #center {
+  position: relative;
+  border: 3px solid black;
+
+}
+
+#game_div #center #dice {
+  position: absolute;
+  top: 164px;
+  left: 160px;
+  pointer-events: none;
+}
+
+#game_settings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#game_settings ul#top_tier_list {
+  list-style: square;
+}
+#game_settings ul#top_tier_list li {
+  margin-left: 20px
+}
+
+#start {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#start fieldset {
+  display: flex;
+  flex-direction: column;
+}
+
+#start #start_game_container {
+  display: flex;
+  gap: 8px;
+  justify-content: stretch;
+}
+
+#start #start_game_container button {
+  flex-grow: 1;
+}
+
+#winner_btn_container {
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
