@@ -12,18 +12,22 @@ window.addEventListener('DOMContentLoaded', () => {
         const asides = document.querySelectorAll<HTMLDivElement>('#game_div aside')
         if (center && asides) {
             const height = window.innerHeight
-            center.style.transform = `scale(${height / center.getBoundingClientRect().height})`
+            const centerHeight = center.getBoundingClientRect().height
+            center.style.transform = `scale(${height / centerHeight})`
             asides.forEach((aside) => {
                 aside.style.width = `calc((100vw - ${center.getBoundingClientRect().width}px) / 2)`
             })
 
-            window.addEventListener('resize', () => {
+            const resizeObs = new ResizeObserver(() => {
                 const height = window.innerHeight
-                center.style.transform = `scale(${height / center.getBoundingClientRect().height})`
+                console.log('@main.ts -', centerHeight)
+                center.style.transform = `scale(${height / centerHeight})`
                 asides.forEach((aside) => {
                     aside.style.width = `calc((100vw - ${center.getBoundingClientRect().width}px) / 2)`
                 })
             })
+
+            resizeObs.observe(document.body)
         }
 
         /* GAME SETTINGS */

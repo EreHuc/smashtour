@@ -1,14 +1,13 @@
 # Smashtour
 
-Based on https://smashmonopoly.com made by [Little Z](https://www.youtube.com/c/LittleZubat) and [El Xando](https://www.youtube.com/ElXando1993)
+A monopoly / business tour for super smash bros ultimate
 
 Available game at: https://smashmonopoly.netlify.app/
 
 ## Rules
 
 ### Player turn order is chosen randomly at the beginning of the game
-### Each player roll dice and land on a square
-### Each square have special effect when landed on
+### 1. Each player roll dice and land on a square
   - Property
     - If no one own the property you play the corresponding character with no handicap
     - If you own the property you play the corresponding character with no handicap
@@ -33,11 +32,11 @@ Available game at: https://smashmonopoly.netlify.app/
     - Own a random character
     - Play the corresponding character with no handicap
 
-### Fight with the opponent and the handicap that is assign to you
+### 2. Fight with the opponent and the handicap that is assign to you
 
-### Select the winner
+### 3. Select the winner
 
-### If you loose
+#### If you loose
   - On a property with 2 houses owned by the winner
     - You lost a random non-locked property
   - On a property with an hotel owned by the winner
@@ -45,7 +44,7 @@ Available game at: https://smashmonopoly.netlify.app/
   - On tax
     - Tax steal you a random non-locked property
 
-### If you win
+#### If you win
   - If you were jailed
     - You are free from jail
   - On chance, jail when not jailed, start and parking
@@ -55,7 +54,7 @@ Available game at: https://smashmonopoly.netlify.app/
   - On a property own by you
     - Upgrade your property level by 1 (expect station) to a maximum of an hotel
 
-### End of the turn
+### 4. End of the turn
   - 2 players
     - if you own 3 set of property you win ( all station own count as 1 )
   - 3 players
@@ -72,3 +71,6 @@ Available game at: https://smashmonopoly.netlify.app/
 
 ## How to lock property
   - Own all the property with same color ( or all station ) and those property will be locked
+
+## Credits
+Based on https://smashmonopoly.com made by [Little Z](https://www.youtube.com/c/LittleZubat) and [El Xando](https://www.youtube.com/ElXando1993)
