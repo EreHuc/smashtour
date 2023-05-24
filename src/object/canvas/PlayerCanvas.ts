@@ -2,7 +2,7 @@ import { Draw } from './Draw.ts'
 import { DrawSettings } from './DrawSettings.ts'
 import { GameSettings } from '../GameSettings.ts'
 import { Slot } from '../Slot.ts'
-import { ownContext } from '../../utils'
+import { GameError, ownContext } from '../../utils'
 import { Player } from '../Player.ts'
 import { Direction } from '../../type'
 
@@ -16,7 +16,7 @@ export class PlayerCanvas extends DrawSettings implements Draw {
         const canvas = new OffscreenCanvas(this.canvasWidth, this.canvasHeight)
         const context = canvas.getContext('2d')
         if (!context) {
-            throw new Error(`no context for offscreen canvas Board`)
+            throw new GameError(`no context for offscreen canvas Board`)
         }
         this.canvas = canvas
         this.context = context
@@ -36,7 +36,7 @@ export class PlayerCanvas extends DrawSettings implements Draw {
         ownContext(this.context, (ctx) => {
             players.forEach((player, i) => {
                 if (player.currentSlotIndex >= slots.length) {
-                    throw new Error(
+                    throw new GameError(
                         `Current slot index can't be superior to slots length. slotIndex: ${player.currentSlotIndex} | slotsLength: ${slots.length}`
                     )
                 }

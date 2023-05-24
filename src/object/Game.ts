@@ -5,9 +5,8 @@ import { Card, Cards, Characters, Direction, Errors, SquareType } from '../type'
 import { Slot } from './Slot.ts'
 import { GameCanvas } from './canvas'
 import { Player } from './Player.ts'
-import { cards } from '../const/cards.ts'
+import { cards, playerTokens } from '../const'
 import { closestHandicap, GameError, shuffleArray } from '../utils'
-import { playerTokens } from '../const/playerTokens.ts'
 
 export class Game extends GameCanvas {
     get currentStep(): (typeof this.steps)[number] {
@@ -42,7 +41,7 @@ export class Game extends GameCanvas {
             this.randomise().then(() => {
                 const btnContainer = document.querySelector<HTMLDivElement>('div#buttons_container')
                 if (!btnContainer) {
-                    throw new Error('no buttons container')
+                    throw new GameError('no buttons container')
                 }
                 btnContainer.classList.remove('hidden')
                 this.canvas.addEventListener('mousemove', (ev) => {
@@ -69,7 +68,7 @@ export class Game extends GameCanvas {
     public start(playerNames: string[]) {
         const startForm = document.querySelector<HTMLButtonElement>('form#start')
         if (!startForm) {
-            throw new Error('no start form')
+            throw new GameError('no start form')
         }
         startForm.classList.add('hidden')
         const playerColors = ['#000000', '#ff0000', '#00ff00', '#0000ff']
@@ -109,7 +108,7 @@ export class Game extends GameCanvas {
                     .then(() => {
                         const startForm = document.querySelector<HTMLButtonElement>('form#start')
                         if (!startForm) {
-                            throw new Error('no start form')
+                            throw new GameError('no start form')
                         }
                         startForm.classList.add('hidden')
 
@@ -161,10 +160,10 @@ export class Game extends GameCanvas {
                         .then(() => this.processRollDice())
                 })
             } else {
-                throw new Error('rollDice: already animating')
+                throw new GameError('rollDice: already animating')
             }
         } else {
-            throw new Error(`rollDice: no current player for id: ${playerIndex}`)
+            throw new GameError(`rollDice: no current player for id: ${playerIndex}`)
         }
     }
 
@@ -184,7 +183,7 @@ export class Game extends GameCanvas {
             }
         )
         if (!winner) {
-            throw new Error(`rollDice: no battle winner for id: ${playerIndex}`)
+            throw new GameError(`rollDice: no battle winner for id: ${playerIndex}`)
         }
         this.winner = winner
         this.losers = losers
@@ -302,7 +301,7 @@ export class Game extends GameCanvas {
                     direction = Direction.top_left
                     break
                 default:
-                    throw new Error("A square can't have more than 4 corners !")
+                    throw new GameError("A square can't have more than 4 corners !")
             }
             return {
                 x,
@@ -416,7 +415,7 @@ export class Game extends GameCanvas {
                 const winnerBtnContainer = document.querySelector<HTMLDivElement>('#winner_btn_container')
                 const winnerButtons = document.querySelectorAll<HTMLButtonElement>('.winner')
                 if (!winnerBtnContainer) {
-                    throw new Error('No Battle buttons container')
+                    throw new GameError('No Battle buttons container')
                 }
                 this.uiCanvas.resetGeneralInfos()
                 this.uiCanvas.addGeneralInfos('Battle begins, who won ?')
@@ -452,7 +451,7 @@ export class Game extends GameCanvas {
                 break
             case 'winner':
                 if (!this.winner) {
-                    throw new Error('No result without winner')
+                    throw new GameError('No result without winner')
                 }
                 this.currentStep = 'gameOver'
                 this.processWinner(this.winner)
@@ -523,7 +522,7 @@ export class Game extends GameCanvas {
     private processRollDice() {
         const rollBtn = document.querySelector<HTMLButtonElement>('button#roll')
         if (!rollBtn) {
-            throw new Error('No Roll dice button')
+            throw new GameError('No Roll dice button')
         }
         if (this.playerTurn === undefined) {
             this.playerTurn = 0

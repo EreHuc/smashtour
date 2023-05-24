@@ -3,7 +3,7 @@ import { Draw } from './Draw.ts'
 import { GameSettings } from '../GameSettings.ts'
 import { Slot } from '../Slot.ts'
 import { Player } from '../Player.ts'
-import { ownContext } from '../../utils'
+import { GameError, ownContext } from '../../utils'
 import { Direction } from '../../type'
 
 export class PropertyCanvas extends DrawSettings implements Draw {
@@ -18,7 +18,7 @@ export class PropertyCanvas extends DrawSettings implements Draw {
         const canvas = new OffscreenCanvas(this.canvasWidth, this.canvasHeight)
         const context = canvas.getContext('2d')
         if (!context) {
-            throw new Error(`no context for offscreen canvas Board`)
+            throw new GameError(`no context for offscreen canvas Board`)
         }
         this.canvas = canvas
         this.context = context
@@ -26,7 +26,7 @@ export class PropertyCanvas extends DrawSettings implements Draw {
         const hotelImg = document.querySelector<HTMLImageElement>('#hotel')
 
         if (houseImg === null || hotelImg === null) {
-            throw new Error('Missing house or hotel img')
+            throw new GameError('Missing house or hotel img')
         }
 
         this.houseImg = houseImg

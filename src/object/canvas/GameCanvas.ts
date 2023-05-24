@@ -3,7 +3,7 @@ import { CharactersCanvas } from './CharactersCanvas.ts'
 import { PlayerCanvas } from './PlayerCanvas.ts'
 import { DrawSettings } from './DrawSettings.ts'
 import { Slot } from '../Slot.ts'
-import { ownContext, lightenDarkenColor } from '../../utils'
+import { ownContext, lightenDarkenColor, GameError } from '../../utils'
 import { GameSettings } from '../GameSettings.ts'
 import { Player } from '../Player.ts'
 import { PropertyCanvas } from './PropertyCanvas.ts'
@@ -37,15 +37,15 @@ export class GameCanvas extends DrawSettings {
 
         const canvas = document.querySelector<HTMLCanvasElement>('#game')
         if (!canvas) {
-            throw new Error(`no canvas`)
+            throw new GameError(`no canvas`)
         }
         const context = canvas.getContext('2d')
         if (!context) {
-            throw new Error(`no context for canvas`)
+            throw new GameError(`no context for canvas`)
         }
         const diceCanvas = document.querySelector<HTMLCanvasElement>('#dice')
         if (!diceCanvas) {
-            throw new Error(`no dice canvas`)
+            throw new GameError(`no dice canvas`)
         }
         this.context = context
         this.canvas = canvas

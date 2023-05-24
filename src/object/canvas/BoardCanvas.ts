@@ -3,7 +3,7 @@ import { DrawSettings } from './DrawSettings.ts'
 import { GameSettings } from '../GameSettings.ts'
 import { Slot } from '../Slot.ts'
 import { Direction, SquareType } from '../../type'
-import { ownContext } from '../../utils'
+import { GameError, ownContext } from '../../utils'
 import Color from 'color'
 
 export class BoardCanvas extends DrawSettings implements Draw {
@@ -16,7 +16,7 @@ export class BoardCanvas extends DrawSettings implements Draw {
         const canvas = new OffscreenCanvas(this.canvasWidth, this.canvasHeight)
         const context = canvas.getContext('2d')
         if (!context) {
-            throw new Error(`no context for offscreen canvas Board`)
+            throw new GameError(`no context for offscreen canvas Board`)
         }
         this.canvas = canvas
         this.context = context

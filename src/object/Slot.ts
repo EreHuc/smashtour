@@ -1,7 +1,6 @@
-import { Direction, SquareType } from '../type'
+import { Direction, SquareType, Square } from '../type'
 import { Character } from './Character.ts'
 import { Player } from './Player.ts'
-import { Square } from '../type/Square.ts'
 
 export class Slot implements Square {
     propertyColor?: string
