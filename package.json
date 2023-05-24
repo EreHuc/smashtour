@@ -1,0 +1,29 @@
+{
+    "name": "smashmonopoly.com",
+    "version": "1.0.0",
+    "description": "",
+    "main": "utils/extract.js",
+    "scripts": {
+        "dev": "vite",
+        "dev_v2": "vite index.html",
+        "build": "tsc && vite build",
+        "preview": "vite preview"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/bootstrap-select": "^1.13.4",
+        "@types/jquery": "^3.5.16",
+        "prettier": "^2.8.8",
+        "typescript": "^5.0.4",
+        "vite": "^4.3.5"
+    },
+    "dependencies": {
+        "@3d-dice/dice-box": "^1.0.8",
+        "@types/color": "^3.0.3",
+        "bootstrap-select": "1.13.4",
+        "color": "^4.2.3",
+        "jquery": "3.6.1"
+    }
+}

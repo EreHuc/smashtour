@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Smashopoly</title>
+        <link href="/font/stylesheet.css" rel="stylesheet" />
+        <link href="/css/reset.css" rel="stylesheet" />
+        <link href="/css/monopoly_v2.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div id="game_div">
+            <div class="left" id="game_settings">
+                <fieldset>
+                    <label for="perspective">Perspective</label>
+                    <input type="number" id="perspective" step=".1" />
+                </fieldset>
+                <fieldset>
+                    <label for="debug">Debug</label>
+                    <input id="debug" type="checkbox" />
+                </fieldset>
+                <details>
+                    <summary>top tiers</summary>
+                    <ul id="top_tier_list"></ul>
+                </details>
+            </div>
+            <div id="center">
+                <canvas id="game"></canvas>
+                <canvas id="dice"></canvas>
+            </div>
+            <div class="right">
+                <div id="buttons_container" class="hidden">
+                    <button type="button" id="roll" class="hidden">Roll dice</button>
+                    <form id="start">
+                        <button type="button" id="load">Load previous game</button>
+                        <fieldset>
+                            <label for="player_name_1">Player Name</label>
+                            <input type="text" name="player_1" required id="player_name_1" value="Player 1" />
+                        </fieldset>
+                        <fieldset>
+                            <label for="player_name_2">Player Name</label>
+                            <input type="text" name="player_2" required id="player_name_2" value="Player 2" />
+                        </fieldset>
+                        <fieldset>
+                            <label for="player_name_3">Player Name</label>
+                            <input type="text" name="player_3" id="player_name_3" />
+                        </fieldset>
+                        <fieldset>
+                            <label for="player_name_4">Player Name</label>
+                            <input type="text" name="player_4" id="player_name_4" />
+                        </fieldset>
+                        <div id="start_game_container">
+                            <button type="submit">Start</button>
+                            <button type="button" id="randomise">Randomise</button>
+                        </div>
+                    </form>
+                    <div id="winner_btn_container" class="hidden">
+                        <button type="button" class="winner" data-player-index="0">Player 1</button>
+                        <button type="button" class="winner" data-player-index="1">Player 2</button>
+                        <button type="button" class="winner" data-player-index="2">Player 3</button>
+                        <button type="button" class="winner" data-player-index="3">Player 4</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <img id="hotel" src="/img/hotel.png" class="hidden" />
+        <img id="house" src="/img/house.png" class="hidden" />
+        <dialog id="card">
+            <button type="button" id="confirm">Confirm</button>
+        </dialog>
+        <script type="module" src="./src_v2/main.ts"></script>
+    </body>
+</html>
