@@ -418,12 +418,12 @@ export class Game extends GameCanvas {
                     throw new GameError('No Battle buttons container')
                 }
                 this.uiCanvas.resetGeneralInfos()
-                this.uiCanvas.addGeneralInfos('Battle begins, who won ?')
-                this.message('Battle begins, who won ?')
                 this.diceBox.clear()
                 this.players.forEach((player, index) => {
                     this.processHandicap(this.slots[player.slotIndex], player, index)
                 })
+                this.uiCanvas.addGeneralInfos('Battle begins, who won ?')
+                this.message('Battle begins, who won ?')
                 this.currentStep = 'losers'
                 this.draw().then(() => {
                     winnerButtons.forEach((btn) => {
@@ -539,7 +539,6 @@ export class Game extends GameCanvas {
         if (rollBtn && this.playerTurn !== undefined) {
             rollBtn.classList.remove('hidden')
             rollBtn.setAttribute('data-player-index', this.playerTurn.toString())
-            this.message(`${this.players[this.playerTurn].name}'s turn`)
         } else {
             this.nextStep()
         }
@@ -644,12 +643,12 @@ export class Game extends GameCanvas {
             return this.processLandedSlot(player)
         }
 
-        this.processHandicap(landedSlot, player, playerIndex)
+        this.processHandicap(landedSlot, player, playerIndex, false)
 
         return
     }
 
-    private processHandicap(slot: Slot, player: Player, playerIndex: number) {
+    private processHandicap(slot: Slot, player: Player, playerIndex: number, logs = true) {
         let handicap = slot.owner ? (slot.owner === player.id ? 0 : slot.handicap) : 0
         if (slot.type === SquareType.station) {
             handicap =
@@ -665,17 +664,16 @@ export class Game extends GameCanvas {
 
         handicap = closestHandicap(handicap)
 
-        if (slot.character) {
-            this.message(
-                `${player.name} landed on ${slot.character?.friendlyName.join(' ')} with an handicap of ${handicap}%`
-            )
-        }
-
         this.uiCanvas.addBattleInfos(
             player,
             playerIndex,
             `${player.name}: ${slot.character?.friendlyName.join(' ')} - ${handicap}%`
         )
+        if (logs) {
+            if (slot.character) {
+                this.message(`${player.name}: ${slot.character?.friendlyName.join(' ')} - ${handicap}%`)
+            }
+        }
     }
 
     private processDiceResult(player: Player, dice: IndividualDieResult[]) {
@@ -1089,6 +1087,12 @@ export class Game extends GameCanvas {
 
     /* UTILITIES */
     private message(message: string) {
+        const logs = document.querySelector<HTMLDivElement>('#logs ul')
+        if (logs) {
+            const pElem = document.createElement('li')
+            pElem.innerHTML = message
+            logs.appendChild(pElem)
+        }
         console.info(message)
     }
 
