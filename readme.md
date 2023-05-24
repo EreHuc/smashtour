@@ -32,8 +32,11 @@ Available game at: https://smashmonopoly.netlify.app/
   - Start
     - Own a random character
     - Play the corresponding character with no handicap
+
 ### Fight with the opponent and the handicap that is assign to you
+
 ### Select the winner
+
 ### If you loose
   - On a property with 2 houses owned by the winner
     - You lost a random non-locked property
@@ -41,6 +44,7 @@ Available game at: https://smashmonopoly.netlify.app/
     - The winner chose a non-locked property to steal
   - On tax
     - Tax steal you a random non-locked property
+
 ### If you win
   - If you were jailed
     - You are free from jail
@@ -50,6 +54,7 @@ Available game at: https://smashmonopoly.netlify.app/
     - This property is now yours, congratulation !
   - On a property own by you
     - Upgrade your property level by 1 (expect station) to a maximum of an hotel
+
 ### End of the turn
   - 2 players
     - if you own 3 set of property you win ( all station own count as 1 )

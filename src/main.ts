@@ -9,13 +9,20 @@ window.addEventListener('DOMContentLoaded', () => {
         const game = new Game(gameSettings)
 
         const center = document.querySelector<HTMLDivElement>('#center')
-        if (center) {
+        const asides = document.querySelectorAll<HTMLDivElement>('#game_div aside')
+        if (center && asides) {
             const height = window.innerHeight
             center.style.transform = `scale(${height / center.getBoundingClientRect().height})`
+            asides.forEach((aside) => {
+                aside.style.width = `calc((100vw - ${center.getBoundingClientRect().width}px) / 2)`
+            })
 
             window.addEventListener('resize', () => {
                 const height = window.innerHeight
                 center.style.transform = `scale(${height / center.getBoundingClientRect().height})`
+                asides.forEach((aside) => {
+                    aside.style.width = `calc((100vw - ${center.getBoundingClientRect().width}px) / 2)`
+                })
             })
         }
 

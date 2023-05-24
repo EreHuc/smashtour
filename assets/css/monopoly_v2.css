@@ -10,7 +10,7 @@ body {
   overflow: hidden;
   background-image: url('../img/background_skyline.jpg');
   background-size: cover;
-  font-family: 'Futura PT Heavy';
+  font-family: 'Futura PT Medium', serif;
 }
 
 p {
@@ -32,6 +32,7 @@ button {
   padding: 16px;
   transition: background-color 100ms;
   vertical-align: baseline;
+  font-family: 'Futura PT Heavy', serif;
 }
 button.small {
   padding: 8px;
@@ -51,12 +52,48 @@ input {
   padding: 8px
 }
 
+h2 {
+  font-size: 1.25rem;
+}
+
+h3 {
+  font-size: 1.125rem;
+}
+
+h2, h3 {
+  margin: 4px 0;
+  font-family: "Futura PT Demi", serif
+}
+ul {
+  list-style: square;
+  margin: 4px 0;
+  font-family: "Futura PT Light", serif
+}
+
+details {
+  background: white;
+  border: 3px solid black;
+  padding: 4px;
+  padding-right: 24px;
+}
+
+details :not(summary) {
+  margin-left: 20px;
+  color: #2b2b2b;
+}
+
 .hidden {
   display: none!important;
 }
 
-.left, .right {
-  width: 200px;
+#game_div aside {
+  width: 50vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 16px;
+  overflow-y: auto;
 }
 
 .center {
@@ -66,9 +103,7 @@ input {
 #game_div {
   display: flex;
   gap: 8px;
-  /*display: grid;*/
-  /*grid-template-columns: 1fr max-content 1fr;*/
-  justify-content: space-evenly;
+  justify-content: space-between;
   height: 100vh;
 }
 
@@ -89,17 +124,11 @@ input {
   pointer-events: none;
 }
 
-#game_settings {
+aside#game_settings {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   gap: 8px;
-}
-
-#game_settings ul#top_tier_list {
-  list-style: square;
-}
-#game_settings ul#top_tier_list li {
-  margin-left: 20px
 }
 
 #start {
@@ -128,4 +157,8 @@ input {
   grid-gap: 8px;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
+}
+
+details#rules {
+  text-align: justify;
 }

@@ -9,25 +9,200 @@
     </head>
     <body>
         <div id="game_div">
-            <div class="left" id="game_settings">
-                <fieldset>
-                    <label for="perspective">Perspective</label>
-                    <input type="number" id="perspective" step=".1" />
-                </fieldset>
-                <fieldset>
-                    <label for="debug">Debug</label>
-                    <input id="debug" type="checkbox" />
-                </fieldset>
+            <aside id="game_settings">
+                <details id="rules">
+                    <summary>Rules</summary>
+                    <h3 id="player-turn-order-is-chosen-randomly-at-the-beginning-of-the-game">
+                        Player turn order is chosen randomly at the beginning of the game
+                    </h3>
+                    <h3 id="each-player-roll-dice-and-land-on-a-square">
+                        1. Each player roll dice and land on a square
+                    </h3>
+                    <ul>
+                        <li>
+                            Property
+                            <ul>
+                                <li>
+                                    If no one own the property you play the corresponding character with no handicap
+                                </li>
+                                <li>If you own the property you play the corresponding character with no handicap</li>
+                                <li>
+                                    If an opponent own the property you play the corresponding character with an
+                                    handicap define by the color of property
+                                </li>
+                                <li>
+                                    If an opponent own the property and the set of property with the same color you play
+                                    the corresponding character with an handicap define by the color of property plus
+                                    50% ( rounded )
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            Station
+                            <ul>
+                                <li>If no one own the Station you play the corresponding character with no handicap</li>
+                                <li>If you own the Station you play the corresponding character with no handicap</li>
+                                <li>
+                                    If an opponent own the Station you play the corresponding character with an handicap
+                                    define by the number of Station own by the opponent
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            Chance
+                            <ul>
+                                <li>Draw a chance card and play the corresponding character with no handicap</li>
+                            </ul>
+                        </li>
+                        <li>
+                            Jail
+                            <ul>
+                                <li>Play the corresponding character with no handicap</li>
+                            </ul>
+                        </li>
+                        <li>
+                            Parking
+                            <ul>
+                                <li>Own all property lost in taxes</li>
+                                <li>Play the corresponding character with no handicap</li>
+                            </ul>
+                        </li>
+                        <li>
+                            Go to Jail
+                            <ul>
+                                <li>
+                                    You go to jail and plays the character as if you landed on Jail, but you&#39;re
+                                    jailed this time
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            Tax
+                            <ul>
+                                <li>Play the corresponding character with no handicap</li>
+                            </ul>
+                        </li>
+                        <li>
+                            Start
+                            <ul>
+                                <li>Own a random character</li>
+                                <li>Play the corresponding character with no handicap</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h3 id="fight-with-the-opponent-and-the-handicap-that-is-assign-to-you">
+                        2. Fight with the opponent and the handicap that is assign to you
+                    </h3>
+                    <h3 id="select-the-winner">3. Select the winner</h3>
+                    <h4 id="if-you-loose">If you loose</h4>
+                    <ul>
+                        <li>
+                            On a property with 2 houses owned by the winner
+                            <ul>
+                                <li>You lost a random non-locked property</li>
+                            </ul>
+                        </li>
+                        <li>
+                            On a property with an hotel owned by the winner
+                            <ul>
+                                <li>The winner chose a non-locked property to steal</li>
+                            </ul>
+                        </li>
+                        <li>
+                            On tax
+                            <ul>
+                                <li>Tax steal you a random non-locked property</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h4 id="if-you-win">If you win</h4>
+                    <ul>
+                        <li>
+                            If you were jailed
+                            <ul>
+                                <li>You are free from jail</li>
+                            </ul>
+                        </li>
+                        <li>
+                            On chance, jail when not jailed, start and parking
+                            <ul>
+                                <li>You win a random property, if no property to win upgrade one of yours</li>
+                            </ul>
+                        </li>
+                        <li>
+                            On a not own property
+                            <ul>
+                                <li>This property is now yours, congratulation !</li>
+                            </ul>
+                        </li>
+                        <li>
+                            On a property own by you
+                            <ul>
+                                <li>Upgrade your property level by 1 (expect station) to a maximum of an hotel</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h3 id="end-of-the-turn">4. End of the turn</h3>
+                    <ul>
+                        <li>
+                            2 players
+                            <ul>
+                                <li>if you own 3 set of property you win ( all station own count as 1 )</li>
+                            </ul>
+                        </li>
+                        <li>
+                            3 players
+                            <ul>
+                                <li>if you own 2 set of property you win ( all station own count as 1 )</li>
+                            </ul>
+                        </li>
+                        <li>
+                            4 players
+                            <ul>
+                                <li>if you own 1 set of property you win ( all station own count as 1 )</li>
+                            </ul>
+                        </li>
+                        <li>
+                            If no-one win
+                            <ul>
+                                <li>Next turn, first player roll the dice</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h2 id="jail-rules">Jail rules</h2>
+                    <ul>
+                        <li>If you roll a double you are free</li>
+                        <li>If you win a fight you are free</li>
+                        <li>If you stay more than 3 turn you are free</li>
+                    </ul>
+                    <h2 id="how-to-lock-property">How to lock property</h2>
+                    <ul>
+                        <li>
+                            Own all the property with same color ( or all station ) and those property will be locked
+                        </li>
+                    </ul>
+                </details>
+                <details>
+                    <summary>Debug settings</summary>
+                    <fieldset>
+                        <label for="perspective">Perspective</label>
+                        <input type="number" id="perspective" step=".1" />
+                    </fieldset>
+                    <fieldset>
+                        <label for="debug">Debug</label>
+                        <input id="debug" type="checkbox" />
+                    </fieldset>
+                </details>
                 <details>
                     <summary>top tiers</summary>
                     <ul id="top_tier_list"></ul>
                 </details>
-            </div>
+            </aside>
             <div id="center">
                 <canvas id="game"></canvas>
                 <canvas id="dice"></canvas>
             </div>
-            <div class="right">
+            <aside>
                 <div id="buttons_container" class="hidden">
                     <button type="button" id="roll" class="hidden">Roll dice</button>
                     <form id="start">
@@ -60,7 +235,7 @@
                         <button type="button" class="winner" data-player-index="3">Player 4</button>
                     </div>
                 </div>
-            </div>
+            </aside>
         </div>
         <img id="hotel" src="/img/hotel.png" class="hidden" />
         <img id="house" src="/img/house.png" class="hidden" />
