@@ -82,6 +82,7 @@ export class Game extends GameCanvas {
         this.uiCanvas.addGeneralInfos(`Turn order : \n- ${this.players.map((player) => player.name).join('\n- ')}`)
         this.message(`Turn order : \n- ${this.players.map((player) => player.name).join('\n- ')}`)
         this.playerTurn = undefined
+        this.setBattleBtnNames()
         Promise.all(
             this.players.map(
                 (p) =>
@@ -110,8 +111,8 @@ export class Game extends GameCanvas {
                         if (!startForm) {
                             throw new GameError('no start form')
                         }
+                        this.setBattleBtnNames()
                         startForm.classList.add('hidden')
-
                         this.message('Previous game loaded')
                         return this.nextStep()
                     })
@@ -413,7 +414,6 @@ export class Game extends GameCanvas {
                 break
             case 'battle':
                 const winnerBtnContainer = document.querySelector<HTMLDivElement>('#winner_btn_container')
-                const winnerButtons = document.querySelectorAll<HTMLButtonElement>('.winner')
                 if (!winnerBtnContainer) {
                     throw new GameError('No Battle buttons container')
                 }
@@ -426,17 +426,6 @@ export class Game extends GameCanvas {
                 this.message('Battle begins, who won ?')
                 this.currentStep = 'losers'
                 this.draw().then(() => {
-                    winnerButtons.forEach((btn) => {
-                        const playerIndex = btn.getAttribute('data-player-index')
-                        if (playerIndex) {
-                            const player = this.players[parseInt(playerIndex)]
-                            if (player) {
-                                btn.innerHTML = player.name
-                            } else {
-                                btn.classList.add('hidden')
-                            }
-                        }
-                    })
                     winnerBtnContainer.classList.remove('hidden')
                 })
                 break
@@ -476,7 +465,7 @@ export class Game extends GameCanvas {
     /* SLOT OWNERSHIP */
     private giveSlotOwnership(player: Player | undefined, slot: Slot) {
         slot.owner = player ? player.id : player
-        // slot.upgrade = 0
+        slot.upgrade = 0
         let slotsInSet: Slot[] = []
         if (player) {
             if (slot.propertyColor) {
@@ -660,12 +649,11 @@ export class Game extends GameCanvas {
         if (slot.type === SquareType.station) {
             handicap =
                 handicap * this.slots.filter((s) => s.owner === slot.owner && s.type === SquareType.station).length
-        } else if (slot.owner && slot.propertyColor) {
+        } else if (slot.owner !== player.id && slot.owner && slot.propertyColor) {
             const isFullSet = this.slots
                 .filter((s) => s.propertyColor === slot.propertyColor)
                 .every((s) => s.owner === slot.owner)
             if (isFullSet) {
-                handicap += 50
             }
         }
 
@@ -685,7 +673,7 @@ export class Game extends GameCanvas {
 
     private processDiceResult(player: Player, dice: IndividualDieResult[]) {
         const [die1, die2] = dice
-        // const [die1, die2] = [{ value: 12 }, { value: 0 }] as IndividualDieResult[]
+        // const [die1, die2] = [{ value: 0 }, { value: 0 }] as IndividualDieResult[]
         this.uiCanvas.addDiceResult(
             this.players.findIndex((p) => p.id === player.id),
             [die1, die2]
@@ -725,6 +713,8 @@ export class Game extends GameCanvas {
             return
         }
 
+        console.log('processLosers@Game.ts -', currentLoser.name)
+
         const loserSlot = this.slots[currentLoser.slotIndex]
 
         const charOwnedByLoser = this.slots.filter((slot) => slot?.owner === currentLoser.id && !slot.locked)
@@ -734,27 +724,30 @@ export class Game extends GameCanvas {
                     this.giveRandomSlotOwnership(undefined, charOwnedByLoser, currentLoser)
                     break
                 default:
-                    switch (this.slots[currentLoser.slotIndex].upgrade) {
-                        // HOTEL
-                        case 2:
-                            this.uiCanvas.addGeneralInfos(`${this.winner.name} choose a character to gain`)
-                            this.message(`${this.winner.name} choose a character to gain`)
-                            this.setStealBlink(currentLoser).then(() => {
-                                this.losers = this.losers.slice(1)
+                    if (loserSlot.owner && loserSlot.owner === this.winner.id) {
+                        switch (this.slots[currentLoser.slotIndex].upgrade) {
+                            // HOTEL
+                            case 2:
+                                this.setStealBlink(currentLoser).then(() => {
+                                    this.losers = this.losers.slice(1)
+                                    this.processLosers(this.losers)
+                                })
+                                break
+                            // HOUSE
+                            case 1:
+                                this.giveRandomSlotOwnership(this.winner, charOwnedByLoser, currentLoser)
+                                this.losers = losers.slice(1)
                                 this.processLosers(this.losers)
-                            })
-                            break
-                        // HOUSE
-                        case 1:
-                            this.giveRandomSlotOwnership(this.winner, charOwnedByLoser, currentLoser)
-                            this.losers = losers.slice(1)
-                            this.processLosers(this.losers)
-                            break
-                        // DEFAULT PROPERTY LEVEL
-                        default:
-                            this.losers = losers.slice(1)
-                            this.processLosers(this.losers)
-                            break
+                                break
+                            // DEFAULT PROPERTY LEVEL
+                            default:
+                                this.losers = losers.slice(1)
+                                this.processLosers(this.losers)
+                                break
+                        }
+                    } else {
+                        this.losers = losers.slice(1)
+                        this.processLosers(this.losers)
                     }
             }
         } else {
@@ -816,72 +809,101 @@ export class Game extends GameCanvas {
 
     /* GAME OVER */
     private processGameOver() {
-        const sets = this.players.reduce((acc, player) => {
-            acc[player.id] = {}
-            this.slots.forEach((slot) => {
-                const owned = slot.owner === player.id ? 1 : 0
-                if (slot.propertyColor) {
-                    const propertySlot = acc[player.id][slot.propertyColor] || { owned: 0, total: 0 }
-                    acc[player.id][slot.propertyColor] = {
-                        ...propertySlot,
-                        owned: propertySlot.owned + owned,
-                        total: propertySlot.total + 1,
+        const sets: Array<{ player: Player; slots: Slot[][] }> = Object.values(
+            Object.values(
+                this.slots.reduce((acc, slot) => {
+                    let slotId
+                    if (slot.propertyColor) {
+                        slotId = slot.propertyColor
+                    } else if (slot.type === SquareType.station) {
+                        slotId = SquareType.station
                     }
-                    return
-                }
-                if (slot.type === SquareType.station) {
-                    const station = acc[player.id][slot.type] || { owned: 0, total: 0 }
-                    acc[player.id][slot.type] = {
-                        ...station,
-                        owned: station.owned + owned,
-                        total: station.total + 1,
+                    if (slotId) {
+                        if (!acc[slotId]) {
+                            acc[slotId] = {
+                                sets: { slots: [], total: 0 },
+                            }
+                        }
+
+                        acc[slotId] = {
+                            ...acc[slotId],
+                            sets: { slots: acc[slotId].sets.slots, total: acc[slotId].sets.total + 1 },
+                        }
+
+                        if (slot.owner) {
+                            const player = this.players.find((p) => p.id === slot.owner) as Player
+                            if (!acc[slotId].player) {
+                                acc[slotId] = {
+                                    ...acc[slotId],
+                                    player,
+                                    sets: { slots: [slot], total: acc[slotId].sets.total },
+                                }
+                            } else {
+                                if (acc[slotId].player?.id !== slot.owner) {
+                                    acc[slotId] = {
+                                        ...acc[slotId],
+                                        player,
+                                        // if color property own by multiple players set total to huge value to not match
+                                        sets: { slots: [...acc[slotId].sets.slots, slot], total: 999 },
+                                    }
+                                } else {
+                                    acc[slotId] = {
+                                        ...acc[slotId],
+                                        player,
+                                        sets: {
+                                            slots: [...acc[slotId].sets.slots, slot],
+                                            total: acc[slotId].sets.total,
+                                        },
+                                    }
+                                }
+                            }
+                        }
                     }
-                }
-            })
-            return acc
-        }, {} as Record<string, Record<string, Record<'owned' | 'total', number>>>)
+                    return acc
+                }, {} as Record<string, { player?: Player; sets: { slots: Slot[]; total: number } }>)
+            )
+                .filter(({ player }) => player !== undefined)
+                .reduce((acc, { player, sets }) => {
+                    if (!player) {
+                        return acc
+                    }
+                    if (sets.total === sets.slots.length) {
+                        if (!acc[player.id]) {
+                            acc[player.id] = {
+                                player,
+                                slots: [],
+                            }
+                        }
+                        acc[player.id] = {
+                            player,
+                            slots: [...acc[player.id].slots, sets.slots],
+                        }
+                    }
+
+                    return acc
+                }, {} as Record<string, { player: Player; slots: Slot[][] }>)
+        )
+
         let setToWin: number
         switch (this.players.length) {
             case 4:
-                setToWin = 1
-                break
-            case 3:
                 setToWin = 2
                 break
-            default:
+            case 3:
                 setToWin = 3
+                break
+            default:
+                setToWin = 4
         }
-        const winner = Object.entries(sets).find(
-            ([_, properties]) =>
-                Object.values(properties).reduce((acc, { owned, total }) => {
-                    if (owned === total) {
-                        acc += 1
-                    }
-                    return acc
-                }, 0 as number) > setToWin
-        )
-
-        this.lap += 1
-
+        const winner = sets.find((set) => set.slots.length >= setToWin)
         if (winner) {
-            const player = this.players.find((p) => p.id === winner[0])
-            this.uiCanvas.addGeneralInfos(
-                `${player?.name} win with ${Object.values(winner[1]).reduce((acc, { owned, total }) => {
-                    if (owned === total) {
-                        acc += 1
-                    }
-                    return acc
-                }, 0 as number)} sets !`
-            )
-            this.message(
-                `${player?.name} win with ${Object.values(winner[1]).reduce((acc, { owned, total }) => {
-                    if (owned === total) {
-                        acc += 1
-                    }
-                    return acc
-                }, 0 as number)} sets !`
-            )
+            const player = this.players.find((p) => p.id === winner.player.id)
+            this.uiCanvas.addGeneralInfos(`${player?.name} win with ${winner.slots.length} sets !`)
+            this.message(`${player?.name} win with ${winner.slots.length} sets !`)
+            this.setPlayerPropertyBlink(winner.slots.flatMap((slot) => slot))
+            this.draw()
         } else {
+            this.lap += 1
             /** reset */
             this.winner = undefined
             this.losers = []
@@ -975,7 +997,8 @@ export class Game extends GameCanvas {
                     this.players.findIndex((p) => p.id === player.id),
                     x,
                     y
-                )
+                ) &&
+                player.inJail
             ) {
                 player.inJail = undefined
                 player.freeJailCard = false
@@ -996,7 +1019,7 @@ export class Game extends GameCanvas {
             const playerIndex = this.players.findIndex((p) => p.id === player.id)
 
             if (
-                ['rollDice', 'battle'].includes(this.currentStep) &&
+                ['rollDice', 'battle', 'losers'].includes(this.currentStep) &&
                 player.chooseCharCard &&
                 this.uiCanvas.isInChooseCharCard(playerIndex, x, y)
             ) {
@@ -1045,11 +1068,15 @@ export class Game extends GameCanvas {
         const slots = this.slots.filter((s) => s.owner === player.id && s.upgrade < 2 && s.type !== SquareType.station)
         if (slots.length) {
             this.setPlayerPropertyBlink(slots)
+            this.message(`${player.name} chose a property to upgrade`)
+            this.uiCanvas.addGeneralInfos(`${player.name} chose a property to upgrade`)
             this.canvas.addEventListener('mousedown', handler)
         }
     }
 
     private setStealBlink(player: Player) {
+        this.uiCanvas.addGeneralInfos(`${player.name} choose a character to steal`)
+        this.message(`${player.name} choose a character to steal`)
         return new Promise<void>((resolve) => {
             const handler = (ev: MouseEvent) => {
                 const x = ev.offsetX
@@ -1065,7 +1092,9 @@ export class Game extends GameCanvas {
                     }
                 })
             }
-            const slots = this.slots.filter((s) => s.owner !== player.id && !s.locked)
+            const slots = this.slots.filter(
+                (s) => (s.propertyColor || s.type === SquareType.station) && s.owner === player.id && !s.locked
+            )
             if (slots.length) {
                 this.setPlayerPropertyBlink(slots)
                 this.canvas.addEventListener('mousedown', handler)
@@ -1098,6 +1127,8 @@ export class Game extends GameCanvas {
         const slots = this.slots.filter((s) => s.owner && s.owner !== player.id)
         if (slots.length) {
             this.setPlayerPropertyBlink(slots)
+            this.message(`${player.name} chose a property to destroy`)
+            this.uiCanvas.addGeneralInfos(`${player.name} chose a property to destroy`)
             this.canvas.addEventListener('click', handler)
         }
     }
@@ -1166,5 +1197,20 @@ export class Game extends GameCanvas {
         const [selected, ...cards] = this.cards
         this.cards = [...cards, selected]
         return selected
+    }
+
+    private setBattleBtnNames() {
+        const winnerButtons = document.querySelectorAll<HTMLButtonElement>('.winner')
+        winnerButtons.forEach((btn) => {
+            const playerIndex = btn.getAttribute('data-player-index')
+            if (playerIndex) {
+                const player = this.players[parseInt(playerIndex)]
+                if (player) {
+                    btn.innerHTML = player.name
+                } else {
+                    btn.classList.add('hidden')
+                }
+            }
+        })
     }
 }

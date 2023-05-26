@@ -302,7 +302,7 @@ export class UiCanvas extends DrawSettings implements Draw {
                         ctx.beginPath()
                         ctx.fillStyle = 'black'
                         ctx.fillText(
-                            'Chose Char',
+                            'Choose Char',
                             this.playerCardWidth / 2,
                             this.playerCardHeight / 2 + 10 + this.playerCardHeight
                         )
@@ -327,7 +327,7 @@ export class UiCanvas extends DrawSettings implements Draw {
                         ctx.beginPath()
                         ctx.fillStyle = 'black'
                         ctx.fillText(
-                            'Chose Char',
+                            'Choose Char',
                             this.playerCardWidth / 2,
                             this.playerCardHeight / 2 + 10 + this.playerCardHeight
                         )
@@ -355,7 +355,7 @@ export class UiCanvas extends DrawSettings implements Draw {
                         ctx.beginPath()
                         ctx.fillStyle = 'black'
                         ctx.fillText(
-                            'Chose Char',
+                            'Choose Char',
                             this.playerCardWidth / 2,
                             this.playerCardHeight / 2 - 10 - this.playerCardHeight
                         )
@@ -380,7 +380,7 @@ export class UiCanvas extends DrawSettings implements Draw {
                         ctx.beginPath()
                         ctx.fillStyle = 'black'
                         ctx.fillText(
-                            'Chose Char',
+                            'Choose Char',
                             this.playerCardWidth / 2,
                             this.playerCardHeight / 2 - 10 - this.playerCardHeight
                         )
